@@ -183,10 +183,22 @@ h2.title::after {
 
 .lang-layout {
     display: grid;
-    grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr;
     justify-content: center;
-    gap: 0 var(--space-2);
+    gap: var(--space-4) var(--space-6);
+}
+
+/* Language items: position remove button on left side */
+.lang-layout > li {
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.lang-layout > li .list-remove-btn {
+    top: 0;
+    right: auto;
+    left: -0.25rem;
+    transform: none;
 }
 
 meter {
@@ -209,6 +221,183 @@ meter {
 .contact-item:not(:first-child)::before {
     content: "•";
     margin-inline: var(--space-2);
+}
+
+/* ============================================
+   SOCIAL LINKS
+   ============================================ */
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.social-link .social-icon {
+    width: 1em;
+    height: 1em;
+    fill: currentcolor;
+    vertical-align: -0.125em;
+}
+
+.social-link .social-username {
+    color: var(--muted);
+}
+
+/* Add Social button in address */
+.add-social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0 var(--space-2);
+    border: 1px dashed var(--rule);
+    border-radius: 4px;
+    font-size: 0.875em;
+    color: var(--muted);
+    background: transparent;
+    transition: border-color 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+}
+
+.add-social-btn:hover {
+    border-color: var(--link);
+    color: var(--link);
+}
+
+/* Social link remove button positioning */
+.contact-item.social-item {
+    position: relative;
+}
+
+.contact-item.social-item .list-remove-btn {
+    position: relative;
+    top: auto;
+    right: auto;
+    display: inline-flex;
+    width: 1rem;
+    height: 1rem;
+    margin-left: var(--space-1);
+    font-size: 0.75rem;
+    vertical-align: middle;
+    opacity: 0;
+    transform: none;
+}
+
+.contact-item.social-item:hover .list-remove-btn {
+    opacity: 1;
+}
+
+.contact-item.social-item.removing {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* ============================================
+   SOCIAL LINK MODAL
+   ============================================ */
+
+.social-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(0 0 0 / 40%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.social-modal-backdrop.visible {
+    opacity: 1;
+}
+
+.social-modal {
+    width: 90%;
+    max-width: 420px;
+    padding: var(--space-6);
+    border: none;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 10px 40px rgb(0 0 0 / 20%);
+    transform: translateY(-10px);
+    transition: transform 0.2s ease;
+}
+
+.social-modal-backdrop.visible .social-modal {
+    transform: translateY(0);
+}
+
+.social-modal h3 {
+    margin-block: 0 var(--space-4);
+    font-size: 1.1rem;
+    color: var(--ink);
+}
+
+.social-modal-input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 2px solid var(--rule);
+    border-radius: 4px;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: border-color 0.15s ease;
+}
+
+.social-modal-input:focus {
+    border-color: var(--link);
+    outline: none;
+}
+
+.social-modal-input.error {
+    border-color: #dc2626;
+}
+
+.social-modal-error {
+    min-height: 1.5em;
+    margin-block: var(--space-2);
+    font-size: 0.875rem;
+    color: #dc2626;
+}
+
+.social-modal-hint {
+    margin-block: var(--space-1) var(--space-4);
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.social-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.social-modal-btn {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+}
+
+.social-modal-btn.cancel {
+    color: var(--muted);
+    background: var(--rule);
+}
+
+.social-modal-btn.cancel:hover {
+    background: #c5c9cf;
+}
+
+.social-modal-btn.submit {
+    color: #fff;
+    background: var(--link);
+}
+
+.social-modal-btn.submit:hover {
+    background: #a30089;
 }
 
 .lang-description {
@@ -236,12 +425,185 @@ meter {
 }
 
 
+/* Editable elements - visual hint */
+[data-editable] {
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+}
+
+[data-editable]:hover {
+    background-color: rgb(194 0 167 / 5%);
+}
+
+[data-editable][data-editing="true"] {
+    background-color: transparent;
+}
+
+/* Inline edit input styling */
+.inline-edit-input {
+    width: 100%;
+    padding: 0;
+    border: none;
+    border-bottom: 2px solid var(--link);
+    outline: none;
+    font: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    text-align: inherit;
+    color: inherit;
+    background: transparent;
+}
+
+.inline-edit-input:focus {
+    border-bottom-color: var(--link);
+}
+
+/* Multiline textarea styling */
+.inline-edit-textarea {
+    display: block;
+    width: 100%;
+    min-height: 4em;
+    padding: var(--space-2);
+    border: 2px solid var(--link);
+    border-radius: 4px;
+    outline: none;
+    font: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    background: #fff;
+    resize: vertical;
+}
+
+.inline-edit-textarea:focus {
+    border-color: var(--link);
+    box-shadow: 0 0 0 3px rgb(194 0 167 / 10%);
+}
+
+/* ============================================
+   LIST MANAGEMENT CONTROLS
+   ============================================ */
+
+/* Remove button - appears on hover */
+.list-remove-btn {
+    position: absolute;
+    top: 50%;
+    right: -1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--muted);
+    transform: translateY(-50%);
+    background: var(--rule);
+    opacity: 0;
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+    cursor: pointer;
+}
+
+.list-remove-btn:hover {
+    color: #fff;
+    background: #dc2626;
+}
+
+/* Show remove button on item hover */
+[data-list] > li:hover .list-remove-btn,
+[data-list] > article:hover .list-remove-btn {
+    opacity: 1;
+}
+
+/* Add button styling */
+.list-add-wrapper {
+    margin-block: var(--space-3);
+    list-style: none;
+}
+
+.list-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border: 1px dashed var(--rule);
+    border-radius: 4px;
+    font-size: var(--text-sm);
+    color: var(--muted);
+    background: transparent;
+    transition: border-color 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+}
+
+.list-add-btn:hover {
+    border-color: var(--link);
+    color: var(--link);
+}
+
+.list-add-icon {
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+/* Remove animation */
+[data-list] > li.removing,
+[data-list] > article.removing {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    transform: translateX(-10px);
+}
+
+/* Shake animation for "can't delete last item" */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+[data-list] > li.shake,
+[data-list] > article.shake {
+    animation: shake 0.4s ease;
+}
+
+/* Experience articles need position for remove button */
+[data-list="experience"] > article,
+[data-list="education"] > article {
+    position: relative;
+}
+
+/* Bullet items: position remove button on left side */
+[data-list="bullets"] > li {
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+[data-list="bullets"] > li .list-remove-btn {
+    top: 0.15em;
+    right: auto;
+    left: -1.75rem;
+    transform: none;
+}
+
+/* Smaller add button for bullets */
+[data-list="bullets"] > .list-add-wrapper {
+    margin-block: var(--space-2);
+}
+
+[data-list="bullets"] .list-add-btn {
+    padding: var(--space-1) var(--space-2);
+    font-size: 0.8rem;
+}
+
 @media (width <= 780px) {
     .core-tech {
        grid-template-columns: 1fr;
     }
 
-    h3{
+    h3 {
         font-size: var(--items-mobile);
     }
 
@@ -250,19 +612,17 @@ meter {
     }
 
     .meta {
-    font-size: var(--text-sm-mobile);
+        font-size: var(--text-sm-mobile);
     }
-    
 
-    .address{
+    .address {
         display: flex;
         flex-flow: column;
         gap: var(--space-2);
-      }
+    }
 
-.contact-item::before {
-    content: "•";
-    margin-inline: var(--space-2);
-}
-
+    /* Hide separator on mobile - stacked layout doesn't need them */
+    .contact-item::before {
+        content: none;
+    }
 }

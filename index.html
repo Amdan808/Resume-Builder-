@@ -4,30 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume — John Doe</title>
+    <meta name="description" content="Professional resume of John Doe - Junior Web Developer with retail operations experience, skilled in HTML/CSS, JavaScript, Python, and MySQL.">
+    <meta name="author" content="John Doe">
+    
+    <!-- Prevent indexing if this is a personal resume -->
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Open Graph for social sharing -->
+    <meta property="og:title" content="Resume — John Doe">
+    <meta property="og:description" content="Junior Web Developer with hands-on retail operations experience.">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+    
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#2e3038">
+    
     <link rel="stylesheet" href="CSS/style.css">
-    <link rel="stylesheet" href="CSS/print.css">
+    <link rel="stylesheet" href="CSS/print.css" media="print">
 </head>
 <body>
+    <!-- Skip link for keyboard navigation -->
+    <a href="#main-content" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:9999;" onfocus="this.style.cssText='position:fixed;left:1rem;top:1rem;width:auto;height:auto;overflow:visible;z-index:9999;background:#fff;padding:0.5rem 1rem;border:2px solid #2e3038;';" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:9999;';">Skip to main content</a>
 
     <!-- Contact Information-->
     <header class="header">
-        <h1 id="name" class="editable">John Doe</h1>
+        <h1 id="name" data-editable="text">John Doe</h1>
         <address class="address">
-             <span class="contact-item"><a href="mailto:Doe.thegoat@example.com"> Doe.thegoat@example.com</a></span>  
-             <span class="contact-item"> <a href="tel:+1-555-123-4567">+1 555-123-4567 </a></span>
-             <span class="contact-item">Toronto, ON</span> 
-             <!-- <span class="contact-item"><a title="GitHub" href="https://github.com/johnsmith-dev" target="_blank" rel="noopener noreferrer">GitHub</a></span> -->
-             <!-- <span class="contact-item"><a title="LinkedIn" href="https://www.linkedin.com/in/johnsmith-dev" target="_blank" rel="noopener noreferrer">LinkedIn</a></span> -->
+             <span class="contact-item"><a href="mailto:Doe.thegoat@example.com" data-editable="link">Doe.thegoat@example.com</a></span>  
+             <span class="contact-item"><a href="tel:+1-555-123-4567" data-editable="link">+1 555-123-4567</a></span>
+             <span class="contact-item" data-editable="text">Toronto, ON</span> 
+            <!-- user can new item(social media, linkeding etc..)-->
+            
         </address>
     </header>
 
-    <main class="container">
+    <main id="main-content" class="container">
         <!-- Summary-->
          <section>
             <h2 class="title"> Summary</h2>
-           <p class="summary-paragraph">
-  Junior web developer with hands-on retail operations experience. Skilled in HTML/CSS, modern JavaScript basics, Python scripting, and MySQL for reporting. Comfortable using Git/GitHub in small teams, building accessible responsive pages, and improving store workflows. Looking for entry-level frontend or full-stack roles where I can ship practical features and keep learning.
-</p>
+           <p class="summary-paragraph" data-editable="multiline">Junior web developer with hands-on retail operations experience. Skilled in HTML/CSS, modern JavaScript basics, Python scripting, and MySQL for reporting. Comfortable using Git/GitHub in small teams, building accessible responsive pages, and improving store workflows. Looking for entry-level frontend or full-stack roles where I can ship practical features and keep learning.</p>
 
         </section>
 
@@ -37,25 +54,25 @@
             <div class="core-tech">
                 <!-- Store Operations -->
                 <section class="skills core">
-                    <h3 id="core-title">Store Operations</h3>
-                     <ul>
-    <li>Cash handling and POS across cash, debit, credit, and gift</li>
-    <li>Daily reconciliation and maintaining audit-ready logs</li>
-    <li>Pick, pack, and stage online orders; process Click & Collect handoffs</li>
-    <li>Assist customers with product lookups and course materials</li>
-    <li>Greet customers, manage queues, and resolve EAS/tag alarms</li>
+                    <h3 data-editable="text">Store Operations</h3>
+                    <ul data-list="skills">
+                        <li data-editable="text">Cash handling and POS across cash, debit, credit, and gift</li>
+                        <li data-editable="text">Daily reconciliation and maintaining audit-ready logs</li>
+                        <li data-editable="text">Pick, pack, and stage online orders; process Click & Collect handoffs</li>
+                        <li data-editable="text">Assist customers with product lookups and course materials</li>
+                        <li data-editable="text">Greet customers, manage queues, and resolve EAS/tag alarms</li>
   </ul>
                 </section>
 
                 <!-- Technical & Tools -->
                 <section class="skills tech">
-                    <h3 id="tech-title">Technical & Tools</h3>
-                    <ul>
-                    <li>HTML5 & CSS3 (responsive layouts) and JavaScript fundamentals (ES6+)</li>
-                    <li>POS systems, barcode scanners, and basic device troubleshooting</li>
-                    <li>Python for small automation scripts and microcontroller demos</li>
-                    <li>MySQL basics for querying and simple reports</li>
-                    <li>Git & GitHub for version control and collaboration</li>
+                    <h3 data-editable="text">Technical & Tools</h3>
+                    <ul data-list="skills">
+                        <li data-editable="text">HTML5 & CSS3 (responsive layouts) and JavaScript fundamentals (ES6+)</li>
+                        <li data-editable="text">POS systems, barcode scanners, and basic device troubleshooting</li>
+                        <li data-editable="text">Python for small automation scripts and microcontroller demos</li>
+                        <li data-editable="text">MySQL basics for querying and simple reports</li>
+                        <li data-editable="text">Git & GitHub for version control and collaboration</li>
                     </ul>
                 </section>
                 </div>
@@ -63,26 +80,26 @@
         </section>
 
         <!-- Experiences Heading-->    
-        <section class="experience-container">
+        <section class="experience-container" data-list="experience">
             <h2 class="title">Experience</h2>
 
             <!-- Exp n1 -->
             <article>
                 <div class="exp-detail">
                 <div class="company-date italic"> 
-                    <p>Portfolio Project</p>
+                        <p data-editable="text">Portfolio Project</p>
                     <p class="meta">
-                        <time datetime="2025-05-01">May 2025</time> -  
-                        <time datetime="2025-08-18">Aug 2025</time> 
+                            <time datetime="2025-05-01" data-editable="text">May 2025</time> -  
+                            <time datetime="2025-08-18" data-editable="text">Aug 2025</time> 
                     </p>
-                </div>
-                    <h3>Web App Development & Team Collaboration</h3>
                     </div>
-                    <ul class="experience">
-                        <li>Built responsive, semantic pages (HTML5/CSS3) and interactive features (vanilla JavaScript) focusing on accessibility and performance.</li>
-                        <li>Collaborated in small teams using Git/GitHub (branches, pull requests) to plan work, review code, and demo outcomes.</li>
-                        <li>Developed Python scripts for reading simple sensor data and integrating with demo hardware.</li>
-                        <li>Designed basic relational schemas and wrote MySQL queries (joins, aggregates) for reporting features.</li>
+                    <h3 data-editable="text">Web App Development & Team Collaboration</h3>
+                </div>
+                <ul class="experience" data-list="bullets">
+                    <li data-editable="text">Built responsive, semantic pages (HTML5/CSS3) and interactive features (vanilla JavaScript) focusing on accessibility and performance.</li>
+                    <li data-editable="text">Collaborated in small teams using Git/GitHub (branches, pull requests) to plan work, review code, and demo outcomes.</li>
+                    <li data-editable="text">Developed Python scripts for reading simple sensor data and integrating with demo hardware.</li>
+                    <li data-editable="text">Designed basic relational schemas and wrote MySQL queries (joins, aggregates) for reporting features.</li>
                     </ul>
             </article>
 
@@ -90,21 +107,21 @@
             <article>
                 <div class="exp-detail">
                 <div class="company-date italic"> 
-                    <p>ABC Retail Store</p>
+                        <p data-editable="text">ABC Retail Store</p>
                     <p class="meta">
-                        <time datetime="2022-01-01">Jan 2022</time> -  
-                        <time datetime="2024-12-31">Dec 2024</time> 
+                            <time datetime="2022-01-01" data-editable="text">Jan 2022</time> -  
+                            <time datetime="2024-12-31" data-editable="text">Dec 2024</time> 
                     </p>
                 </div>
-                    <h3>Store Management & IT Operations</h3>
+                    <h3 data-editable="text">Store Management & IT Operations</h3>
                 </div>    
-                <ul class="experience">
-                    <li>Operated the register and processed payments and refunds across cash, debit, and credit with accurate receipts.</li>
-                    <li>Reconciled end-of-day transactions and maintained clean digital records for audit and reporting.</li>
-                    <li>Picked and prepared customer orders; labeled items and confirmed contents before handoff.</li>
-                    <li>Answered in-person and phone inquiries and routed requests appropriately.</li>
-                    <li>Assisted with stocking and merchandising to keep the sales floor organized.</li>
-                    <li>Verified purchases and resolved gate alarms by checking items and removing/deactivating tags.</li>
+                <ul class="experience" data-list="bullets">
+                    <li data-editable="text">Operated the register and processed payments and refunds across cash, debit, and credit with accurate receipts.</li>
+                    <li data-editable="text">Reconciled end-of-day transactions and maintained clean digital records for audit and reporting.</li>
+                    <li data-editable="text">Picked and prepared customer orders; labeled items and confirmed contents before handoff.</li>
+                    <li data-editable="text">Answered in-person and phone inquiries and routed requests appropriately.</li>
+                    <li data-editable="text">Assisted with stocking and merchandising to keep the sales floor organized.</li>
+                    <li data-editable="text">Verified purchases and resolved gate alarms by checking items and removing/deactivating tags.</li>
                 </ul>
             </article>
 
@@ -113,44 +130,44 @@
         </section>
 
         <!-- Education -->
-        <section>
+        <section data-list="education">
             <h2 class="title">Education</h2>
 
             <!-- Educ n1-->
             <article class="education">
-                <h3>Community College</h3>
+                <h3 data-editable="text">Community College</h3>
                 <div class="meta-wrapper italic">
                     <p> 
-                        <time datetime="2025">2025</time> -
-                        <time>Present</time>
+                        <time datetime="2025" data-editable="text">2025</time> -
+                        <time data-editable="text">Present</time>
                     </p>
-                    <p>Toronto, Ontario</p>   
+                    <p data-editable="text">Toronto, Ontario</p>   
                 </div>
             </article>
 
             <!-- Educ n2-->
             <article class="education">
-                <h3>Bachelor in Telecommunication Engineering</h3>
+                <h3 data-editable="text">Bachelor in Telecommunication Engineering</h3>
                 <div class="meta-wrapper italic">
                     <p> 
-                        <time datetime="2021">2021</time> -
-                        <time datetime="2024">2024</time>
+                        <time datetime="2021" data-editable="text">2021</time> -
+                        <time datetime="2024" data-editable="text">2024</time>
                     </p>
-                    <p>University of Technology</p>   
-                    <p>Montreal, Quebec</p>
+                    <p data-editable="text">University of Technology</p>   
+                    <p data-editable="text">Montreal, Quebec</p>
                 </div>
             </article>
             
             <!-- Educ n3-->
              <article class="education">
-                <h3>Bachelor of Economic Sciences and Business Management</h3>
+                <h3 data-editable="text">Bachelor of Economic Sciences and Business Management</h3>
                     <div class="meta-wrapper italic">
                         <p>
-                            <time datetime="2017">2017</time> –
-                            <time datetime="2021">2021</time>
+                        <time datetime="2017" data-editable="text">2017</time> –
+                        <time datetime="2021" data-editable="text">2021</time>
                         </p>
-                        <p>Business University</p>
-                        <p>Vancouver, British Columbia</p>
+                    <p data-editable="text">Business University</p>
+                    <p data-editable="text">Vancouver, British Columbia</p>
                 </div>
             </article>
 
@@ -162,44 +179,44 @@
         <section class="coursework-container">
             <h2 class="title">Training</h2>
             <article>
-                <ul>
-                    <li>Web Development Fundamentals (HTML/CSS, responsive design, accessibility)</li>
-                    <li>JavaScript & DOM Manipulation (ES6+, async/await, event-driven programming)</li>
-                    <li>Database Design & SQL (MySQL schema design, CRUD operations)</li>
-                    <li>Version Control & Collaboration (Git, GitHub workflows)</li>
-                    <li>Professional Communication & Teamwork (presentations, Agile-style collaboration)</li>
-                    <li>Digital Tools in Practice (VS Code, basic Photoshop, DaVinci Resolve)</li>
+                <ul data-list="training">
+                    <li data-editable="text">Web Development Fundamentals (HTML/CSS, responsive design, accessibility)</li>
+                    <li data-editable="text">JavaScript & DOM Manipulation (ES6+, async/await, event-driven programming)</li>
+                    <li data-editable="text">Database Design & SQL (MySQL schema design, CRUD operations)</li>
+                    <li data-editable="text">Version Control & Collaboration (Git, GitHub workflows)</li>
+                    <li data-editable="text">Professional Communication & Teamwork (presentations, Agile-style collaboration)</li>
+                    <li data-editable="text">Digital Tools in Practice (VS Code, basic Photoshop, DaVinci Resolve)</li>
                 </ul>
             </article>
         </section>
 
         <!-- Languages-->
          <section>
-            <h2 class="title"> Languages </h2>
-            <ul class="lang-layout">
+            <h2 class="title">Languages</h2>
+            <ul class="lang-layout" data-list="languages">
                 <li> 
-                    <label for="english">English</label>
+                    <label for="english" data-editable="text">English</label>
                     <meter id="english" min="0" max="5" value="5"></meter>
                     <span class="sr-only">English — 5 of 5</span>
-                    <p class="lang-description">Native</p>
+                    <p class="lang-description" data-editable="text">Native</p>
                 </li>
                 <li>    
-                    <label for="french">French</label>
+                    <label for="french" data-editable="text">French</label>
                     <meter id="french" min="0" max="5" value="4"></meter>
                     <span class="sr-only">French — 4 of 5</span>
-                    <p class="lang-description">Fluent</p>
+                    <p class="lang-description" data-editable="text">Fluent</p>
                 </li>
                 <li>
-                    <label for="spanish">Spanish</label>
-                    <meter id="spanish" min="0" max="5" value="3" ></meter>
+                    <label for="spanish" data-editable="text">Spanish</label>
+                    <meter id="spanish" min="0" max="5" value="3"></meter>
                     <span class="sr-only">Spanish — 3 of 5</span>
-                    <p class="lang-description">Intermediate</p>
+                    <p class="lang-description" data-editable="text">Intermediate</p>
                 </li>
                 <li>    
-                    <label for="german">German</label>
-                    <meter id="german" min="0" max="5" value="2" ></meter>
+                    <label for="german" data-editable="text">German</label>
+                    <meter id="german" min="0" max="5" value="2"></meter>
                     <span class="sr-only">German — 2 of 5</span>
-                    <p class="lang-description">Basic</p>
+                    <p class="lang-description" data-editable="text">Basic</p>
                 </li>    
                 </ul>
         </section>

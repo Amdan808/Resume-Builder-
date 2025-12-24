@@ -18,6 +18,52 @@
         line-height: 1.3; /* Tighter line height for print */
     }
 
+    /* Hide skip link and interactive elements in print */
+    [href="#main-content"],
+    .inline-edit-input,
+    .inline-edit-textarea,
+    .list-add-wrapper,
+    .list-remove-btn {
+        display: none !important;
+    }
+
+    /* Show URLs after external links for print (not in address - already visible) */
+    a[href^="http"]::after {
+        content: " [" attr(href) "]";
+        font-size: 0.8em;
+        word-break: break-all;
+    }
+
+    /* Address links: email/phone already show text, no need for ::after */
+    .address a::after {
+        content: none;
+    }
+
+    /* Social links in print: show "Platform: username" format */
+    .social-link .social-icon {
+        display: none; /* Hide SVG icon in print */
+    }
+
+    .social-link .social-username::before {
+        content: attr(data-platform) ": ";
+    }
+
+    /* Use the data-platform from parent link */
+    .social-link[data-platform]::before {
+        content: attr(data-platform) ": ";
+        font-weight: 500;
+    }
+
+    .social-link[data-platform] .social-username::before {
+        content: none; /* Remove the ::before from username since we use it on the link */
+    }
+
+    /* Hide add social button and modal in print */
+    .add-social-btn,
+    .social-modal-backdrop {
+        display: none !important;
+    }
+
     .container { 
         max-width: none;
         margin: 0;
@@ -32,6 +78,7 @@
     .header h1 {
         margin-block: 0 var(--space-2);
         font-size: 1.8rem; /* Slightly smaller for print */
+        cursor: default; /* Remove pointer cursor for print */
     }
 
     /* Reduce spacing between sections for print */
@@ -81,8 +128,14 @@
 
     .address { 
         display: flex; 
-        flex-flow: row nowrap;             
-        gap: var(--space-2);
+        flex-flow: row wrap;
+        justify-content: center;
+        gap: var(--space-1) var(--space-2);
+    }
+
+    .contact-item:not(:first-child)::before {
+        content: "•";
+        margin-inline: var(--space-2);
     }
 
     /* Ensure meter elements print properly */
@@ -118,11 +171,31 @@
 
     /* Prevent awkward breaks */
     .lang-layout {
-    break-inside: avoid;
+        break-inside: avoid;
     }
 
     /* Remove extra spacing that can cause page breaks */
     .summary-paragraph {
         margin-block: var(--space-1) var(--space-3);
+    }
+
+    /* Language meters: add text fallback for print since meters may not render */
+    .lang-layout meter {
+        display: none;
+    }
+
+    .lang-layout .sr-only {
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        margin: 0 !important;
+        clip-path: none !important;
+        font-size: 0.85em;
+        white-space: normal !important;
+        color: var(--muted);
+    }
+
+    .lang-layout .lang-description {
+        display: none; /* Hide description since sr-only now shows */
     }
 }
