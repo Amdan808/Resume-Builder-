@@ -92,8 +92,8 @@
   // LOCAL STORAGE PERSISTENCE
   // ============================================
 
-  const STORAGE_KEY = 'resume-builder:snapshot:v2';
-  const STORAGE_VERSION = 2;
+  const STORAGE_KEY = 'resume-builder:snapshot:v3';
+  const STORAGE_VERSION = 3;
   let saveTimer = null;
 
   /**
@@ -255,11 +255,15 @@
    */
   function initListContainers() {
     document.querySelectorAll('[data-list]').forEach(container => {
-      // Add the "add item" button at the end
-      const addBtn = createAddButton(container.dataset.list);
-      container.appendChild(addBtn);
+      // Check if add button wrapper already exists to prevent duplicates
+      const existingWrapper = container.querySelector(':scope > .list-add-wrapper');
+      if (!existingWrapper) {
+        // Add the "add item" button at the end
+        const addBtn = createAddButton(container.dataset.list, container.tagName);
+        container.appendChild(addBtn);
+      }
 
-      // Add remove buttons to existing items
+      // Add remove buttons to existing items (always do this)
       const items = getListItems(container);
       items.forEach(item => addRemoveButton(item));
     });
@@ -333,7 +337,9 @@
       e.preventDefault();
       const btn = e.target.closest('.list-add-btn');
       const container = btn.closest('[data-list]');
-      addListItem(container);
+      if (container) {
+        addListItem(container);
+      }
       return;
     }
 
@@ -642,9 +648,14 @@
 
   /**
    * Create the "Add" button for a list
+   * @param {string} listType - Type of list (skills, experience, etc.)
+   * @param {string} containerTag - Tag name of the container element
    */
-  function createAddButton(listType) {
-    const wrapper = document.createElement('li');
+  function createAddButton(listType, containerTag) {
+    // Use appropriate wrapper element based on container type
+    // <li> for UL/OL lists, <div> for section/article containers
+    const isListContainer = containerTag === 'UL' || containerTag === 'OL';
+    const wrapper = document.createElement(isListContainer ? 'li' : 'div');
     wrapper.className = 'list-add-wrapper';
     
     const label = getListLabel(listType);
@@ -693,7 +704,8 @@
       return;
     }
     
-    const addWrapper = container.querySelector('.list-add-wrapper');
+    // Use :scope > to find only direct child wrapper, not nested ones
+    const addWrapper = container.querySelector(':scope > .list-add-wrapper');
     
     let newItem;
     
@@ -723,7 +735,7 @@
     
     // Initialize any nested data-list containers (e.g., bullets inside experience)
     newItem.querySelectorAll('[data-list]').forEach(nestedContainer => {
-      const nestedAddBtn = createAddButton(nestedContainer.dataset.list);
+      const nestedAddBtn = createAddButton(nestedContainer.dataset.list, nestedContainer.tagName);
       nestedContainer.appendChild(nestedAddBtn);
       
       // Add remove buttons to existing items in nested container
@@ -972,7 +984,7 @@
       } else {
         // Create new item
         const newItem = createLanguageItem(name, level);
-        const addWrapper = container.querySelector('.list-add-wrapper');
+        const addWrapper = container.querySelector(':scope > .list-add-wrapper');
         container.insertBefore(newItem, addWrapper);
         addRemoveButton(newItem);
         scheduleSave();

@@ -703,9 +703,9 @@ meter {
     background: #dc2626;
 }
 
-/* Show remove button on item hover */
-[data-list] > li:hover .list-remove-btn,
-[data-list] > article:hover .list-remove-btn {
+/* Show remove button on item hover (direct child only, not nested) */
+[data-list] > li:hover > .list-remove-btn,
+[data-list] > article:hover > .list-remove-btn {
     opacity: 1;
 }
 
