@@ -38,6 +38,37 @@
     { value: 5, label: 'Native', description: 'Native or bilingual' }
   ];
 
+  /**
+   * Generate visual meter bar HTML with 5 segments
+   * @param {number} level - Proficiency level (1-5)
+   * @returns {string} HTML string for the meter bar
+   */
+  function createMeterBarHTML(level) {
+    const segments = [];
+    for (let i = 1; i <= 5; i++) {
+      const filled = i <= level ? 'meter-segment-filled' : '';
+      segments.push(`<span class="meter-segment ${filled}" data-segment="${i}"></span>`);
+    }
+    return `<div class="meter-bar" data-editable-proficiency="true" title="Click to change proficiency">${segments.join('')}</div>`;
+  }
+
+  /**
+   * Update visual meter bar segments based on level
+   * @param {HTMLElement} meterBar - The .meter-bar element
+   * @param {number} level - Proficiency level (1-5)
+   */
+  function updateMeterBar(meterBar, level) {
+    if (!meterBar) return;
+    const segments = meterBar.querySelectorAll('.meter-segment');
+    segments.forEach((seg, index) => {
+      if (index < level) {
+        seg.classList.add('meter-segment-filled');
+      } else {
+        seg.classList.remove('meter-segment-filled');
+      }
+    });
+  }
+
   const SOCIAL_PLATFORMS = {
     github: {
       pattern: /github\.com\/([^\/\?]+)/i,
@@ -215,6 +246,9 @@
     // Initialize social link button in address
     initSocialButton();
 
+    // Initialize visual meter bars for existing language items
+    initMeterBars();
+
     // #region agent log
     fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:init:postinit',message:'init complete',data:{hasPrintBtn:!!document.querySelector('.print-btn'),hasPrintCssRuleGuess:!!document.querySelector('link[href*=\"print.css\"]')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/C'})}).catch(()=>{});
     // #endregion
@@ -251,6 +285,27 @@
     btn.innerHTML = '<span>+</span> Social';
     btn.setAttribute('title', 'Add social media link');
     address.appendChild(btn);
+  }
+
+  /**
+   * Initialize visual meter bars for existing language items in the HTML
+   */
+  function initMeterBars() {
+    document.querySelectorAll('[data-list="languages"] meter').forEach(meter => {
+      // Skip if visual meter bar already exists
+      if (meter.nextElementSibling && meter.nextElementSibling.classList.contains('meter-bar')) {
+        return;
+      }
+      
+      const level = parseInt(meter.value, 10) || 3;
+      const meterBarHTML = createMeterBarHTML(level);
+      
+      // Insert the visual meter bar after the hidden native meter
+      meter.insertAdjacentHTML('afterend', meterBarHTML);
+      
+      // Remove the data-editable-proficiency from the native meter (it's now hidden)
+      meter.removeAttribute('data-editable-proficiency');
+    });
   }
 
   // ============================================
@@ -786,7 +841,8 @@
     
     li.innerHTML = `
       <label for="${id}" data-editable="text">${name}</label>
-      <meter id="${id}" min="0" max="5" value="${level}" data-editable-proficiency="true"></meter>
+      <meter id="${id}" min="0" max="5" value="${level}"></meter>
+      ${createMeterBarHTML(level)}
       <span class="sr-only">${name} — ${level} of 5</span>
       <p class="lang-description" data-editable-proficiency="true">${proficiency.label}</p>
     `;
@@ -794,8 +850,7 @@
     // Only the label is directly text-editable
     li.querySelector('label').setAttribute('title', 'Click to edit name');
     
-    // Meter and description open the proficiency modal
-    li.querySelector('meter').setAttribute('title', 'Click to change proficiency');
+    // Meter bar and description open the proficiency modal
     li.querySelector('.lang-description').setAttribute('title', 'Click to change proficiency');
     
     return li;
@@ -827,7 +882,7 @@
         <span class="lang-modal-option-content">
           <span class="lang-modal-option-label">${p.label}</span>
           <span class="lang-modal-option-desc">${p.description}</span>
-          <meter min="0" max="5" value="${p.value}" class="lang-modal-meter"></meter>
+          ${createMeterBarHTML(p.value).replace('data-editable-proficiency="true"', '').replace('title="Click to change proficiency"', '')}
         </span>
       </label>
     `).join('');
@@ -968,11 +1023,13 @@
     
     const label = item.querySelector('label');
     const meter = item.querySelector('meter');
+    const meterBar = item.querySelector('.meter-bar');
     const srOnly = item.querySelector('.sr-only');
     const description = item.querySelector('.lang-description');
     
     if (label) label.textContent = name;
     if (meter) meter.value = level;
+    if (meterBar) updateMeterBar(meterBar, level);
     if (srOnly) srOnly.textContent = `${name} — ${level} of 5`;
     if (description) description.textContent = proficiency.label;
     

@@ -139,22 +139,21 @@
         margin-inline: var(--space-2);
     }
 
-    /* Ensure meter elements print properly */
-    meter {
-        appearance: none;
-        height: 6px;
-        border-radius: 2px;
-        background: #e5e7eb;
+    /* Ensure meter bar prints properly */
+    .meter-bar {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
-    meter::-webkit-meter-bar {
-        border-radius: 2px;
-        background: #e5e7eb;
+    .meter-segment {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
-    meter::-webkit-meter-optimum-value {
-        border-radius: 2px;
-        background: var(--muted);
+    .meter-segment-filled {
+        background: var(--ink) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
     /* Force consistent spacing */
@@ -180,23 +179,5 @@
         margin-block: var(--space-1) var(--space-3);
     }
 
-    /* Language meters: add text fallback for print since meters may not render */
-    .lang-layout meter {
-        display: none;
-    }
-
-    .lang-layout .sr-only {
-        position: static !important;
-        width: auto !important;
-        height: auto !important;
-        margin: 0 !important;
-        clip-path: none !important;
-        font-size: 0.85em;
-        white-space: normal !important;
-        color: var(--muted);
-    }
-
-    .lang-layout .lang-description {
-        display: none; /* Hide description since sr-only now shows */
-    }
+     /* Keep on-screen language layout intact for print */
 }

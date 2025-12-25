@@ -261,8 +261,45 @@ h2.title::after {
     transform: none;
 }
 
+/* ============================================
+   LANGUAGE METER BAR
+   ============================================ */
+
+.meter-bar {
+    --meter-gap: 3px;
+    --bar-width: calc((var(--meter-width) / 5 -  var(--meter-gap)));
+
+    display: flex;
+    gap: var(--meter-gap);
+    width: var(--meter-width);
+    height: 8px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: #fff;
+}
+
+.meter-segment {
+    width: var(--bar-width);
+    height: 100%;
+    border-radius: 1px;
+    background: var(--rule);
+    transition: background-color 0.2s ease;
+}
+
+.meter-segment-filled {
+    background: var(--ink);
+}
+
+/* Hide native meter (kept for accessibility/semantics) */
 meter {
-    width: var(--meter-width) ;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    border: 0;
 }
 
 .core h3, .tech h3 {
@@ -535,9 +572,10 @@ meter {
     color: var(--muted);
 }
 
-.lang-modal-meter {
-    width: 100%;
-    max-width: 120px;
+/* Modal meter bar styling */
+.lang-modal-option .meter-bar {
+    --meter-width: 120px;
+
     height: 6px;
     margin-top: var(--space-1);
 }
