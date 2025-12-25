@@ -23,7 +23,8 @@
     .inline-edit-input,
     .inline-edit-textarea,
     .list-add-wrapper,
-    .list-remove-btn {
+    .list-remove-btn,
+    .print-btn {
         display: none !important;
     }
 
