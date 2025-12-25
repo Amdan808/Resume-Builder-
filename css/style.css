@@ -248,19 +248,6 @@ h2.title::after {
     gap: var(--space-4) var(--space-6);
 }
 
-/* Language items: position remove button on left side */
-.lang-layout > li {
-    position: relative;
-    padding-left: 1.5rem;
-}
-
-.lang-layout > li .list-remove-btn {
-    top: 0;
-    right: auto;
-    left: -0.25rem;
-    transform: none;
-}
-
 /* ============================================
    LANGUAGE METER BAR
    ============================================ */
@@ -325,7 +312,7 @@ meter {
    ============================================ */
 
 .social-link {
-    display: inline-flex;
+    display: inline;
     align-items: center;
     gap: var(--space-1);
 }
@@ -343,10 +330,10 @@ meter {
 
 /* Add Social button in address */
 .add-social-btn {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: var(--space-1);
-    padding: 0 var(--space-2);
+    padding: var(--space-1) var(--space-2);
     border: 1px dashed var(--rule);
     border-radius: 4px;
     font-size: 0.875em;
@@ -359,29 +346,6 @@ meter {
 .add-social-btn:hover {
     border-color: var(--link);
     color: var(--link);
-}
-
-/* Social link remove button positioning */
-.contact-item.social-item {
-    position: relative;
-}
-
-.contact-item.social-item .list-remove-btn {
-    position: relative;
-    top: auto;
-    right: auto;
-    display: inline-flex;
-    width: 1rem;
-    height: 1rem;
-    margin-left: var(--space-1);
-    font-size: 0.75rem;
-    vertical-align: middle;
-    opacity: 0;
-    transform: none;
-}
-
-.contact-item.social-item:hover .list-remove-btn {
-    opacity: 1;
 }
 
 .contact-item.social-item.removing {
@@ -674,39 +638,99 @@ meter {
    LIST MANAGEMENT CONTROLS
    ============================================ */
 
-/* Remove button - appears on hover */
+/* --- Position: relative for elements with remove buttons --- */
+[data-list] > li,
+[data-list] > article,
+.contact-item.social-item {
+    position: relative;
+}
+
+/* --- Remove Button: Base styles --- */
 .list-remove-btn {
     position: absolute;
-    top: 50%;
-    right: -1.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1.25rem;
-    height: 1.25rem;
     padding: 0;
     border: none;
-    border-radius: 50%;
-    font-size: 1rem;
     font-weight: 700;
     line-height: 1;
     color: var(--muted);
-    transform: translateY(-50%);
-    background: var(--rule);
     opacity: 0;
-    transition: opacity 0.15s ease, background-color 0.15s ease;
+    transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     cursor: pointer;
 }
 
-.list-remove-btn:hover {
+/* --- Remove Button: Show on hover --- */
+[data-list] > li:hover > .list-remove-btn,
+[data-list] > article:hover > .list-remove-btn,
+.contact-item.social-item:hover > .list-remove-btn {
+    opacity: 1;
+}
+
+/* --- Remove Button: Default <li> style (left side) --- */
+[data-list] > li > .list-remove-btn,
+.contact-item.social-item > .list-remove-btn {
+    top: 30%;
+    left: -3rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 12%;
+    font-size: 1rem;
+    background: var(--rule);
+    transform: translateY(-50%);
+}
+
+[data-list] > li > .list-remove-btn:hover,
+.contact-item.social-item > .list-remove-btn:hover {
     color: #fff;
     background: #dc2626;
 }
 
-/* Show remove button on item hover (direct child only, not nested) */
-[data-list] > li:hover > .list-remove-btn,
-[data-list] > article:hover > .list-remove-btn {
-    opacity: 1;
+/* --- Remove Button: <article> style (dashed button, left side) --- */
+[data-list] > article > .list-remove-btn {
+    top: 5%;
+    left: -2.25rem;
+    padding: var(--space-1) var(--space-2);
+    border: 1px dashed var(--rule);
+    border-radius: 4px;
+    font-size: var(--text-sm);
+    background: transparent;
+}
+
+[data-list] > article > .list-remove-btn:hover {
+    border-color: #dc2626;
+    color: #dc2626;
+    background: rgb(220 38 38 / 5%);
+}
+
+/* --- Remove Button: Overrides for specific contexts --- */
+
+/* Bullets: align with text baseline */
+[data-list="bullets"] > li > .list-remove-btn {
+    top: 0.15em;
+    left: -3rem;
+    transform: none;
+}
+
+/* Languages: smaller, closer to label */
+.lang-layout > li {
+    padding-left: 1.5rem;
+}
+
+.lang-layout > li > .list-remove-btn {
+    top: 0;
+    left: -0.25rem;
+    transform: none;
+}
+
+/* Social: smaller button */
+.contact-item.social-item > .list-remove-btn {
+    top: 50%;
+    left: -1.25rem;
+    width: 1rem;
+    height: 1rem;
+    font-size: 0.75rem;
 }
 
 /* Add button styling */
@@ -757,25 +781,6 @@ meter {
 [data-list] > li.shake,
 [data-list] > article.shake {
     animation: shake 0.4s ease;
-}
-
-/* Experience articles need position for remove button */
-[data-list="experience"] > article,
-[data-list="education"] > article {
-    position: relative;
-}
-
-/* Bullet items: position remove button on left side */
-[data-list="bullets"] > li {
-    position: relative;
-    padding-left: 1.5rem;
-}
-
-[data-list="bullets"] > li .list-remove-btn {
-    top: 0.15em;
-    right: auto;
-    left: -1.75rem;
-    transform: none;
 }
 
 /* Smaller add button for bullets */

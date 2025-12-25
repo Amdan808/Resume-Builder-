@@ -242,6 +242,9 @@
     // Initialize social link button in address
     initSocialButton();
 
+    // Re-add remove buttons to social items (stripped during save)
+    initSocialRemoveButtons();
+
     // Initialize visual meter bars for existing language items
     initMeterBars();
 
@@ -285,6 +288,24 @@
     btn.innerHTML = '<span>+</span> Social';
     btn.setAttribute('title', 'Add social media link');
     address.appendChild(btn);
+  }
+
+  /**
+   * Re-add remove buttons to social items (stripped during localStorage save)
+   */
+  function initSocialRemoveButtons() {
+    document.querySelectorAll('.contact-item.social-item').forEach(item => {
+      // Skip if already has a remove button
+      if (item.querySelector('.list-remove-btn')) return;
+      
+      const platformName = item.querySelector('.social-link')?.dataset.platform || 'social';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'list-remove-btn';
+      btn.setAttribute('aria-label', `Remove ${platformName} link`);
+      btn.innerHTML = '×';
+      item.appendChild(btn);
+    });
   }
 
   /**
