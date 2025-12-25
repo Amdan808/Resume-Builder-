@@ -26,6 +26,18 @@
   // SOCIAL PLATFORM DEFINITIONS
   // ============================================
 
+  // ============================================
+  // LANGUAGE PROFICIENCY LEVELS
+  // ============================================
+
+  const PROFICIENCY_LEVELS = [
+    { value: 1, label: 'Beginner', description: 'Basic words and phrases' },
+    { value: 2, label: 'Elementary', description: 'Simple conversations' },
+    { value: 3, label: 'Intermediate', description: 'General topics' },
+    { value: 4, label: 'Fluent', description: 'Professional proficiency' },
+    { value: 5, label: 'Native', description: 'Native or bilingual' }
+  ];
+
   const SOCIAL_PLATFORMS = {
     github: {
       pattern: /github\.com\/([^\/\?]+)/i,
@@ -111,6 +123,18 @@
     if (e.target.closest('.add-social-btn')) {
       e.preventDefault();
       promptForSocialLink();
+      return;
+    }
+
+    // Handle proficiency editing (meter or description click)
+    const proficiencyElement = e.target.closest('[data-editable-proficiency]');
+    if (proficiencyElement) {
+      e.preventDefault();
+      const langItem = proficiencyElement.closest('li');
+      if (langItem) {
+        const container = langItem.closest('[data-list="languages"]');
+        showLanguageModal(langItem, container);
+      }
       return;
     }
 
@@ -465,6 +489,13 @@
    */
   function addListItem(container) {
     const listType = container.dataset.list;
+    
+    // Languages use a modal for input
+    if (listType === 'languages') {
+      showLanguageModal(null, container);
+      return;
+    }
+    
     const addWrapper = container.querySelector('.list-add-wrapper');
     
     let newItem;
@@ -482,9 +513,6 @@
         break;
       case 'education':
         newItem = createEducationItem();
-        break;
-      case 'languages':
-        newItem = createLanguageItem();
         break;
       default:
         newItem = createSkillItem();
@@ -601,21 +629,201 @@
     return article;
   }
 
-  function createLanguageItem() {
+  function createLanguageItem(name = 'Language', level = 3) {
     const li = document.createElement('li');
     const id = 'lang-' + Date.now();
+    const proficiency = PROFICIENCY_LEVELS.find(p => p.value === level) || PROFICIENCY_LEVELS[2];
+    
     li.innerHTML = `
-      <label for="${id}" data-editable="text">Language</label>
-      <meter id="${id}" min="0" max="5" value="3"></meter>
-      <span class="sr-only">Language — 3 of 5</span>
-      <p class="lang-description" data-editable="text">Proficiency</p>
+      <label for="${id}" data-editable="text">${name}</label>
+      <meter id="${id}" min="0" max="5" value="${level}" data-editable-proficiency="true"></meter>
+      <span class="sr-only">${name} — ${level} of 5</span>
+      <p class="lang-description" data-editable-proficiency="true">${proficiency.label}</p>
     `;
     
-    li.querySelectorAll('[data-editable]').forEach(el => {
-      el.setAttribute('title', 'Click to edit');
-    });
+    // Only the label is directly text-editable
+    li.querySelector('label').setAttribute('title', 'Click to edit name');
+    
+    // Meter and description open the proficiency modal
+    li.querySelector('meter').setAttribute('title', 'Click to change proficiency');
+    li.querySelector('.lang-description').setAttribute('title', 'Click to change proficiency');
     
     return li;
+  }
+
+  /**
+   * Show modal to add or edit a language
+   * @param {HTMLElement|null} existingItem - If editing, the existing li element; null for new
+   * @param {HTMLElement} container - The languages container
+   */
+  function showLanguageModal(existingItem, container) {
+    const isEditing = existingItem !== null;
+    
+    // Get current values if editing
+    let currentName = '';
+    let currentLevel = 3;
+    
+    if (isEditing) {
+      const label = existingItem.querySelector('label');
+      const meter = existingItem.querySelector('meter');
+      currentName = label ? label.textContent.trim() : '';
+      currentLevel = meter ? parseInt(meter.value, 10) : 3;
+    }
+
+    // Build proficiency options HTML
+    const optionsHtml = PROFICIENCY_LEVELS.map(p => `
+      <label class="lang-modal-option ${p.value === currentLevel ? 'selected' : ''}">
+        <input type="radio" name="proficiency" value="${p.value}" ${p.value === currentLevel ? 'checked' : ''}>
+        <span class="lang-modal-option-content">
+          <span class="lang-modal-option-label">${p.label}</span>
+          <span class="lang-modal-option-desc">${p.description}</span>
+          <meter min="0" max="5" value="${p.value}" class="lang-modal-meter"></meter>
+        </span>
+      </label>
+    `).join('');
+
+    // Create backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'social-modal-backdrop lang-modal-backdrop';
+    backdrop.innerHTML = `
+      <div class="social-modal lang-modal" role="dialog" aria-labelledby="lang-modal-title">
+        <h3 id="lang-modal-title">${isEditing ? 'Edit Language' : 'Add Language'}</h3>
+        <div class="lang-modal-field">
+          <label for="lang-name-input" class="lang-modal-label">Language Name</label>
+          <input 
+            type="text" 
+            id="lang-name-input"
+            class="social-modal-input lang-modal-input" 
+            placeholder="e.g., Spanish, Mandarin, French"
+            value="${currentName}"
+          >
+        </div>
+        <div class="lang-modal-field">
+          <span class="lang-modal-label">Proficiency Level</span>
+          <div class="lang-modal-options">
+            ${optionsHtml}
+          </div>
+        </div>
+        <p class="social-modal-error" id="lang-modal-error" role="alert"></p>
+        <div class="social-modal-actions">
+          <button type="button" class="social-modal-btn cancel">Cancel</button>
+          <button type="button" class="social-modal-btn submit">${isEditing ? 'Save' : 'Add'}</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(backdrop);
+
+    const nameInput = backdrop.querySelector('#lang-name-input');
+    const errorEl = backdrop.querySelector('#lang-modal-error');
+    const cancelBtn = backdrop.querySelector('.social-modal-btn.cancel');
+    const submitBtn = backdrop.querySelector('.social-modal-btn.submit');
+    const optionLabels = backdrop.querySelectorAll('.lang-modal-option');
+
+    // Show with animation
+    requestAnimationFrame(() => {
+      backdrop.classList.add('visible');
+      nameInput.focus();
+      nameInput.select();
+    });
+
+    // Close modal helper
+    function closeModal() {
+      backdrop.classList.remove('visible');
+      setTimeout(() => backdrop.remove(), 200);
+    }
+
+    // Show error helper
+    function showError(message) {
+      errorEl.textContent = message;
+      nameInput.classList.add('error');
+    }
+
+    // Clear error helper
+    function clearError() {
+      errorEl.textContent = '';
+      nameInput.classList.remove('error');
+    }
+
+    // Handle option selection (visual feedback)
+    optionLabels.forEach(label => {
+      label.addEventListener('click', () => {
+        optionLabels.forEach(l => l.classList.remove('selected'));
+        label.classList.add('selected');
+      });
+    });
+
+    // Handle submit
+    function handleSubmit() {
+      const name = nameInput.value.trim();
+      const selectedRadio = backdrop.querySelector('input[name="proficiency"]:checked');
+      const level = selectedRadio ? parseInt(selectedRadio.value, 10) : 3;
+
+      if (!name) {
+        showError('Please enter a language name');
+        nameInput.focus();
+        return;
+      }
+
+      if (isEditing) {
+        // Update existing item
+        updateLanguageItem(existingItem, name, level);
+      } else {
+        // Create new item
+        const newItem = createLanguageItem(name, level);
+        const addWrapper = container.querySelector('.list-add-wrapper');
+        container.insertBefore(newItem, addWrapper);
+        addRemoveButton(newItem);
+      }
+
+      closeModal();
+    }
+
+    // Event listeners
+    cancelBtn.addEventListener('click', closeModal);
+    submitBtn.addEventListener('click', handleSubmit);
+
+    nameInput.addEventListener('input', clearError);
+
+    nameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSubmit();
+      } else if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // Close on backdrop click
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) {
+        closeModal();
+      }
+    });
+
+    // Close on Escape
+    backdrop.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  }
+
+  /**
+   * Update an existing language item with new values
+   */
+  function updateLanguageItem(item, name, level) {
+    const proficiency = PROFICIENCY_LEVELS.find(p => p.value === level) || PROFICIENCY_LEVELS[2];
+    
+    const label = item.querySelector('label');
+    const meter = item.querySelector('meter');
+    const srOnly = item.querySelector('.sr-only');
+    const description = item.querySelector('.lang-description');
+    
+    if (label) label.textContent = name;
+    if (meter) meter.value = level;
+    if (srOnly) srOnly.textContent = `${name} — ${level} of 5`;
+    if (description) description.textContent = proficiency.label;
   }
 
   // ============================================
