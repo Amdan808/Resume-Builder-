@@ -23,10 +23,6 @@
   let activeEditor = null;
 
   // ============================================
-  // SOCIAL PLATFORM DEFINITIONS
-  // ============================================
-
-  // ============================================
   // LANGUAGE PROFICIENCY LEVELS
   // ============================================
 
@@ -269,9 +265,9 @@
     });
   }
 
-  /**
-   * Add "Add Social" button to the address section
-   */
+ 
+  // Add "Add Social" button to the address section
+ 
   function initSocialButton() {
     const address = document.querySelector('.address');
     if (!address) return;
