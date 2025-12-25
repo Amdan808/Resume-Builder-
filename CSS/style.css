@@ -275,7 +275,7 @@ h2.title::after {
     height: 8px;
     overflow: hidden;
     border-radius: 2px;
-    background: #fff;
+    background: transparent;
 }
 
 .meter-segment {
