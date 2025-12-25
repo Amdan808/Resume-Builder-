@@ -62,10 +62,145 @@
   };
 
   // ============================================
+  // LOCAL STORAGE PERSISTENCE
+  // ============================================
+
+  const STORAGE_KEY = 'resume-builder:snapshot:v2';
+  const STORAGE_VERSION = 2;
+  let saveTimer = null;
+
+  /**
+   * Remove UI-only / ephemeral nodes from a cloned subtree before saving.
+   */
+  function stripInteractiveNodes(root) {
+    // Remove controls and transient UI
+    root.querySelectorAll(
+      '.list-remove-btn,' +
+      '.list-add-wrapper,' +
+      '.add-social-btn,' +
+      '.social-modal-backdrop,' +
+      '.inline-edit-input,' +
+      '.inline-edit-textarea'
+    ).forEach(el => el.remove());
+
+    // Remove inline editing state attributes
+    root.querySelectorAll('[data-editing], [data-original-text], [data-original-href]').forEach(el => {
+      el.removeAttribute('data-editing');
+      el.removeAttribute('data-original-text');
+      el.removeAttribute('data-original-href');
+    });
+  }
+
+  function buildSnapshot() {
+    const header = document.querySelector('header.header');
+    const main = document.querySelector('#main-content');
+    if (!header || !main) return null;
+
+    const headerClone = header.cloneNode(true);
+    const mainClone = main.cloneNode(true);
+
+    stripInteractiveNodes(headerClone);
+    stripInteractiveNodes(mainClone);
+
+    return {
+      version: STORAGE_VERSION,
+      timestamp: Date.now(),
+      headerHtml: headerClone.innerHTML,
+      mainHtml: mainClone.innerHTML
+    };
+  }
+
+  function applySnapshot(snapshot) {
+    const header = document.querySelector('header.header');
+    const main = document.querySelector('#main-content');
+    if (!header || !main) return false;
+
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:applySnapshot:pre',message:'Applying snapshot',data:{hasHeader:!!header,hasMain:!!main,hasPrintBtnBefore:!!document.querySelector('.print-btn'),snapshotVersion:snapshot?.version},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/B'})}).catch(()=>{});
+    // #endregion
+
+    header.innerHTML = snapshot.headerHtml;
+    main.innerHTML = snapshot.mainHtml;
+
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:applySnapshot:post',message:'Snapshot applied',data:{hasPrintBtnAfter:!!document.querySelector('.print-btn'),headerChildren:header.children.length,mainChildren:main.children.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
+
+    return true;
+  }
+
+  function saveToStorage() {
+    try {
+      const snapshot = buildSnapshot();
+      if (!snapshot) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
+  }
+
+  function scheduleSave() {
+    if (saveTimer) window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(() => {
+      saveTimer = null;
+      saveToStorage();
+    }, 200);
+  }
+
+  function loadFromStorage() {
+    try {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:loadFromStorage:enter',message:'loadFromStorage enter',data:{hasPrintBtnAtEnter:!!document.querySelector('.print-btn'),key:STORAGE_KEY},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/B/C'})}).catch(()=>{});
+      // #endregion
+
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return false;
+
+      const snapshot = JSON.parse(stored);
+      if (!snapshot || snapshot.version !== STORAGE_VERSION) return false;
+
+      const applied = applySnapshot(snapshot);
+
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:loadFromStorage:exit',message:'loadFromStorage exit',data:{applied,hasPrintBtnAfter:!!document.querySelector('.print-btn'),snapshotVersion:snapshot?.version},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+      // #endregion
+
+      return applied;
+    } catch (e) {
+      console.warn('Failed to load from localStorage:', e);
+      return false;
+    }
+  }
+
+  /**
+   * Clear saved data from localStorage
+   */
+  function clearStorage() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      return true;
+    } catch (e) {
+      console.warn('Failed to clear localStorage:', e);
+      return false;
+    }
+  }
+
+  // ============================================
   // INITIALIZATION
   // ============================================
 
   function init() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:init:preload',message:'init start (before loadFromStorage)',data:{hasPrintBtn:!!document.querySelector('.print-btn')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+
+    // Load saved data first
+    loadFromStorage();
+
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:init:postload',message:'init after loadFromStorage',data:{hasPrintBtn:!!document.querySelector('.print-btn')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/B'})}).catch(()=>{});
+    // #endregion
+
     // Delegated click handler for edits and list controls
     document.addEventListener('click', handleClick);
     
@@ -79,6 +214,10 @@
 
     // Initialize social link button in address
     initSocialButton();
+
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:init:postinit',message:'init complete',data:{hasPrintBtn:!!document.querySelector('.print-btn'),hasPrintCssRuleGuess:!!document.querySelector('link[href*=\"print.css\"]')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/C'})}).catch(()=>{});
+    // #endregion
   }
 
   /**
@@ -156,7 +295,10 @@
       const socialItem = btn.closest('.social-item');
       if (socialItem && !btn.closest('[data-list]')) {
         socialItem.classList.add('removing');
-        setTimeout(() => socialItem.remove(), 200);
+        setTimeout(() => {
+          socialItem.remove();
+          scheduleSave();
+        }, 200);
         return;
       }
       
@@ -343,6 +485,10 @@
     }
 
     cleanup(element);
+    
+    // Persist changes to localStorage
+    scheduleSave();
+    
     return true;
   }
 
@@ -538,6 +684,9 @@
     if (firstEditable) {
       setTimeout(() => firstEditable.click(), 50);
     }
+
+    // Persist structural change (new item)
+    scheduleSave();
   }
 
   /**
@@ -558,6 +707,7 @@
     item.classList.add('removing');
     setTimeout(() => {
       item.remove();
+      scheduleSave();
     }, 200);
   }
 
@@ -774,6 +924,7 @@
         const addWrapper = container.querySelector('.list-add-wrapper');
         container.insertBefore(newItem, addWrapper);
         addRemoveButton(newItem);
+        scheduleSave();
       }
 
       closeModal();
@@ -824,6 +975,9 @@
     if (meter) meter.value = level;
     if (srOnly) srOnly.textContent = `${name} — ${level} of 5`;
     if (description) description.textContent = proficiency.label;
+    
+    // Persist changes
+    scheduleSave();
   }
 
   // ============================================
@@ -916,6 +1070,7 @@
       // Success - create the link and close
       const socialData = parseSocialUrl(url);
       createSocialLink(socialData);
+      scheduleSave();
       closeModal();
     }
 
