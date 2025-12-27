@@ -65,14 +65,16 @@
     });
   }
 
+// SOCIAL MEDIA PLATFORMS DEFINITIONS
+
   const SOCIAL_PLATFORMS = {
     github: {
-      pattern: /github\.com\/([^\/\?]+)/i,
+      pattern: /github\.com\/([^\/\?]+)/i, 
       icon: '<svg viewBox="0 0 24 24" class="social-icon"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>',
       name: 'GitHub'
     },
     linkedin: {
-      pattern: /linkedin\.com\/in\/([^\/\?]+)/i,
+      pattern: /linkedin\.com\/in\/([^\/\?]+)/i, 
       icon: '<svg viewBox="0 0 24 24" class="social-icon"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
       name: 'LinkedIn'
     },
@@ -87,6 +89,199 @@
       name: 'Website'
     }
   };
+
+  // ============================================
+  // RENDER FUNCTIONS (JSON → DOM)
+  // ============================================
+
+  /**
+   * Main render function - takes JSON data and renders the entire resume
+   * @param {Object} data - Resume data object
+   */
+  function renderResume(data) {
+    const header = document.querySelector('header.header');
+    const main = document.querySelector('#main-content');
+    if (!header || !main) return;
+
+    // Clear existing content
+    header.innerHTML = '';
+    main.innerHTML = '';
+
+    // Render each section
+    renderHeader(header, data.header);
+    renderSummary(main, data.summary);
+    renderSkills(main, data.skills);
+    renderExperience(main, data.experience);
+    renderEducation(main, data.education);
+    renderTraining(main, data.training);
+    renderLanguages(main, data.languages);
+  }
+
+  /**
+   * Render the header section (name, contacts, socials)
+   */
+  function renderHeader(container, headerData) {
+    // Name
+    const h1 = document.createElement('h1');
+    h1.id = 'name';
+    h1.setAttribute('data-editable', 'text');
+    h1.textContent = headerData.name;
+    container.appendChild(h1);
+
+    // Address/contacts wrapper
+    const address = document.createElement('address');
+    address.className = 'address';
+
+    // Contact items (email, phone, location)
+    headerData.contacts.forEach(contact => {
+      const span = document.createElement('span');
+      span.className = 'contact-item';
+
+      if (contact.type === 'email') {
+        const a = document.createElement('a');
+        a.href = `mailto:${contact.value}`;
+        a.setAttribute('data-editable', 'link');
+        a.textContent = contact.value;
+        span.appendChild(a);
+      } else if (contact.type === 'phone') {
+        const a = document.createElement('a');
+        a.href = `tel:${contact.value.replace(/\s/g, '-')}`;
+        a.setAttribute('data-editable', 'link');
+        a.textContent = contact.value;
+        span.appendChild(a);
+      } else {
+        // Location or other text-only contact
+        span.setAttribute('data-editable', 'text');
+        span.textContent = contact.value;
+      }
+
+      address.appendChild(span);
+    });
+
+    // Social links
+    headerData.socials.forEach(social => {
+      const platformConfig = SOCIAL_PLATFORMS[social.platform] || SOCIAL_PLATFORMS.portfolio;
+      
+      const span = document.createElement('span');
+      span.className = 'contact-item social-item';
+      span.innerHTML = `
+        <a href="${escapeHtml(social.url)}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="social-link"
+           title="${escapeHtml(platformConfig.name)}"
+           data-platform="${escapeHtml(platformConfig.name)}">
+          ${platformConfig.icon}
+          <span class="social-username">${escapeHtml(social.username)}</span>
+        </a>
+      `;
+      address.appendChild(span);
+    });
+
+    container.appendChild(address);
+  }
+
+  /**
+   * Render the summary section
+   */
+  function renderSummary(container, summaryText) {
+    const section = document.createElement('section');
+    
+    const h2 = document.createElement('h2');
+    h2.className = 'title';
+    h2.textContent = 'Summary';
+    section.appendChild(h2);
+
+    const p = document.createElement('p');
+    p.className = 'summary-paragraph';
+    p.setAttribute('data-editable', 'multiline');
+    p.textContent = summaryText;
+    section.appendChild(p);
+
+    container.appendChild(section);
+  }
+
+  /**
+   * Render the skills section (two-column layout)
+   */
+  function renderSkills(container, skillsData) {
+    const section = document.createElement('section');
+    
+    const h2 = document.createElement('h2');
+    h2.className = 'title';
+    h2.textContent = 'Skills';
+    section.appendChild(h2);
+
+    const coreTech = document.createElement('div');
+    coreTech.className = 'core-tech';
+
+    skillsData.forEach((skillGroup, index) => {
+      const skillSection = document.createElement('section');
+      skillSection.className = index === 0 ? 'skills core' : 'skills tech';
+
+      const h3 = document.createElement('h3');
+      h3.setAttribute('data-editable', 'text');
+      h3.textContent = skillGroup.category;
+      skillSection.appendChild(h3);
+
+      const ul = document.createElement('ul');
+      ul.setAttribute('data-list', 'skills');
+      
+      skillGroup.items.forEach(item => {
+        const li = document.createElement('li');
+        li.setAttribute('data-editable', 'text');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+
+      skillSection.appendChild(ul);
+      coreTech.appendChild(skillSection);
+    });
+
+    section.appendChild(coreTech);
+    container.appendChild(section);
+  }
+
+  // ============================================
+  // YOUR TURN: Implement these render functions
+  // Follow the same pattern as above
+  // ============================================
+
+  /**
+   * Render the experience section
+   * TODO: Implement this - follow renderSkills pattern
+   */
+  function renderExperience(container, experienceData) {
+    // Your code here
+    console.log('TODO: renderExperience', experienceData);
+  }
+
+  /**
+   * Render the education section
+   * TODO: Implement this
+   */
+  function renderEducation(container, educationData) {
+    // Your code here
+    console.log('TODO: renderEducation', educationData);
+  }
+
+  /**
+   * Render the training section
+   * TODO: Implement this
+   */
+  function renderTraining(container, trainingData) {
+    // Your code here
+    console.log('TODO: renderTraining', trainingData);
+  }
+
+  /**
+   * Render the languages section
+   * TODO: Implement this - use createMeterBarHTML() for the meter bars
+   */
+  function renderLanguages(container, languagesData) {
+    // Your code here
+    console.log('TODO: renderLanguages', languagesData);
+  }
 
   // ============================================
   // LOCAL STORAGE PERSISTENCE
@@ -768,6 +963,12 @@
     if (firstEditable) {
       setTimeout(() => firstEditable.click(), 50);
     }
+
+    //
+    //
+    //
+
+
 
     // Persist structural change (new item)
     scheduleSave();
