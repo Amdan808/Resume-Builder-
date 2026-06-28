@@ -1,7 +1,5 @@
 /**
- * Resume Builder - Inline Edit System
- * 
- * Features:
+ *
  * - Inline text editing with data-editable attributes
  * - Add/remove list items with data-list containers
  * - Social media link support with smart username extraction
@@ -337,16 +335,8 @@
     const main = document.querySelector('#main-content');
     if (!header || !main) return false;
 
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:applySnapshot:pre',message:'Applying snapshot',data:{hasHeader:!!header,hasMain:!!main,hasPrintBtnBefore:!!document.querySelector('.print-btn'),snapshotVersion:snapshot?.version},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/B'})}).catch(()=>{});
-    // #endregion
-
     header.innerHTML = snapshot.headerHtml;
     main.innerHTML = snapshot.mainHtml;
-
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:applySnapshot:post',message:'Snapshot applied',data:{hasPrintBtnAfter:!!document.querySelector('.print-btn'),headerChildren:header.children.length,mainChildren:main.children.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
 
     return true;
   }
@@ -371,10 +361,6 @@
 
   function loadFromStorage() {
     try {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:loadFromStorage:enter',message:'loadFromStorage enter',data:{hasPrintBtnAtEnter:!!document.querySelector('.print-btn'),key:STORAGE_KEY},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/B/C'})}).catch(()=>{});
-      // #endregion
-
       const stored = localStorage.getItem(STORAGE_KEY);
       if (!stored) return false;
 
@@ -382,10 +368,6 @@
       if (!snapshot || snapshot.version !== STORAGE_VERSION) return false;
 
       const applied = applySnapshot(snapshot);
-
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:loadFromStorage:exit',message:'loadFromStorage exit',data:{applied,hasPrintBtnAfter:!!document.querySelector('.print-btn'),snapshotVersion:snapshot?.version},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-      // #endregion
 
       return applied;
     } catch (e) {
@@ -412,16 +394,8 @@
   // ============================================
 
   function init() {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:init:preload',message:'init start (before loadFromStorage)',data:{hasPrintBtn:!!document.querySelector('.print-btn')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-
     // Load saved data first
     loadFromStorage();
-
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:init:postload',message:'init after loadFromStorage',data:{hasPrintBtn:!!document.querySelector('.print-btn')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/B'})}).catch(()=>{});
-    // #endregion
 
     // Delegated click handler for edits and list controls
     document.addEventListener('click', handleClick);
@@ -442,10 +416,6 @@
 
     // Initialize visual meter bars for existing language items
     initMeterBars();
-
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/6b1836e4-380b-48c2-b189-64a53554ec64',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JS/script.js:init:postinit',message:'init complete',data:{hasPrintBtn:!!document.querySelector('.print-btn'),hasPrintCssRuleGuess:!!document.querySelector('link[href*=\"print.css\"]')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A/C'})}).catch(()=>{});
-    // #endregion
   }
 
   /**
@@ -828,9 +798,7 @@
     }
   }
 
-  // ============================================
-  // LIST MANAGEMENT
-  // ============================================
+
 
   /**
    * Get the direct list item children of a container
