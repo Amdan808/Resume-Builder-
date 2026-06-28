@@ -1,7 +1,6 @@
-/* Enhanced Print Styles */
 @media print {
     @page {
-        margin: 12mm 16mm; 
+        margin: 12mm 16mm;
         size: a4;
     }
 
@@ -10,15 +9,13 @@
         print-color-adjust: exact;
     }
 
-    /* Reset margins for print to prevent spacing issues */
     body {
         margin: 0;
         padding: 0;
-        font-size: 11px; /* Slightly smaller for print */
-        line-height: 1.3; /* Tighter line height for print */
+        font-size: 11px;
+        line-height: 1.3;
     }
 
-    /* Hide skip link and interactive elements in print */
     [href="#main-content"],
     .inline-edit-input,
     .inline-edit-textarea,
@@ -28,44 +25,39 @@
         display: none !important;
     }
 
-    /* Show URLs after external links for print (not in address - already visible) */
     a[href^="http"]::after {
         content: " [" attr(href) "]";
         font-size: 0.8em;
         word-break: break-all;
     }
 
-    /* Address links: email/phone already show text, no need for ::after */
     .address a::after {
         content: none;
     }
 
-    /* Social links in print: show "Platform: username" format */
     .social-link .social-icon {
-        display: none; /* Hide SVG icon in print */
+        display: none;
     }
 
     .social-link .social-username::before {
         content: attr(data-platform) ": ";
     }
 
-    /* Use the data-platform from parent link */
     .social-link[data-platform]::before {
         content: attr(data-platform) ": ";
         font-weight: 500;
     }
 
     .social-link[data-platform] .social-username::before {
-        content: none; /* Remove the ::before from username since we use it on the link */
+        content: none;
     }
 
-    /* Hide add social button and modal in print */
     .add-social-btn,
     .social-modal-backdrop {
         display: none !important;
     }
 
-    .container { 
+    .container {
         max-width: none;
         margin: 0;
         padding: 0;
@@ -78,11 +70,10 @@
 
     .header h1 {
         margin-block: 0 var(--space-2);
-        font-size: 1.8rem; /* Slightly smaller for print */
-        cursor: default; /* Remove pointer cursor for print */
+        font-size: 1.8rem;
+        cursor: default;
     }
 
-    /* Reduce spacing between sections for print */
     section {
         margin-bottom: var(--space-4);
     }
@@ -118,17 +109,17 @@
     article {
         break-inside: avoid;
         margin-bottom: var(--space-4);
-     
+
     }
 
-    .core-tech { 
-        grid-template-columns: 1fr 1fr; 
+    .core-tech {
+        grid-template-columns: 1fr 1fr;
         column-gap: var(--space-6);
         break-inside: avoid;
     }
 
-    .address { 
-        display: flex; 
+    .address {
+        display: flex;
         flex-flow: row wrap;
         justify-content: center;
         gap: var(--space-1) var(--space-2);
@@ -139,7 +130,6 @@
         margin-inline: var(--space-2);
     }
 
-    /* Ensure meter bar prints properly */
     .meter-bar {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -156,7 +146,6 @@
         print-color-adjust: exact;
     }
 
-    /* Force consistent spacing */
     .meta-wrapper {
         margin-bottom: var(--space-2);
     }
@@ -169,15 +158,12 @@
         margin-bottom: var(--space-3);
     }
 
-    /* Prevent awkward breaks */
     .lang-layout {
         break-inside: avoid;
     }
 
-    /* Remove extra spacing that can cause page breaks */
     .summary-paragraph {
         margin-block: var(--space-1) var(--space-3);
     }
 
-     /* Keep on-screen language layout intact for print */
 }

@@ -1,4 +1,3 @@
-/* Tokens */
 :root {
     --ink: #2e3038;
     --muted:#4b5563;
@@ -26,7 +25,6 @@
     --space-8:2rem;
 }
 
-/* --- screen-reader-only utility --- */
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -38,10 +36,6 @@
   border: 0 !important;
   white-space: nowrap !important;
 }
-
-/* ============================================
-   PRINT BUTTON
-   ============================================ */
 
 .print-btn {
     position: fixed;
@@ -79,7 +73,6 @@
     fill: currentcolor;
 }
 
-/* On smaller screens show icon only */
 @media (width <= 500px) {
     .print-btn {
         padding: var(--space-3);
@@ -99,10 +92,6 @@
     }
 }
 
-/* ============================================
-   GLOBAL STYLES
-   ============================================ */
-
 *::before,
 *,
 *::after {
@@ -120,8 +109,8 @@ p {
 }
 
 ul {
-    margin-block: var(--space-2) var(--space-6); 
-    padding-inline-start: var(--space-5); 
+    margin-block: var(--space-2) var(--space-6);
+    padding-inline-start: var(--space-5);
     list-style-position: outside;
 }
 
@@ -145,7 +134,7 @@ h3 {
     font-weight: 600;
     margin-top: var(--space-0);
     margin-block-end: var(--space-2);
-} 
+}
 
 body {
     font-family:  Verdana, sans-serif;
@@ -168,7 +157,7 @@ body {
     padding: var(--space-2);
 }
 
-.header h1 { 
+.header h1 {
     font-size: var(--name);
     font-weight: 700;
     text-transform: capitalize;
@@ -184,8 +173,6 @@ body {
     text-transform: none;
     color: var(--muted);
 }
-
-
 
 a:link, a:visited {
     text-decoration: none;
@@ -252,10 +239,6 @@ h2.title::after {
     gap: var(--space-4) var(--space-6);
 }
 
-/* ============================================
-   LANGUAGE METER BAR
-   ============================================ */
-
 .meter-bar {
     --meter-gap: 3px;
     --bar-width: calc((var(--meter-width) / 5 -  var(--meter-gap)));
@@ -281,7 +264,6 @@ h2.title::after {
     background: var(--ink);
 }
 
-/* Hide native meter style (kept for accessibility/semantics) */
 meter {
     position: absolute;
     width: 1px;
@@ -311,10 +293,6 @@ meter {
     margin-inline: var(--space-2);
 }
 
-/* ============================================
-   SOCIAL LINKS
-   ============================================ */
-
 .social-link {
     display: inline;
     align-items: center;
@@ -332,7 +310,6 @@ meter {
     color: var(--muted);
 }
 
-/* Add Social button in address */
 .add-social-btn {
     display: flex;
     align-items: center;
@@ -356,10 +333,6 @@ meter {
     opacity: 0;
     transition: opacity 0.2s ease;
 }
-
-/* ============================================
-   SOCIAL LINK MODAL
-   ============================================ */
 
 .social-modal-backdrop {
     position: fixed;
@@ -465,10 +438,6 @@ meter {
     background: #a30089;
 }
 
-/* ============================================
-   LANGUAGE MODAL
-   ============================================ */
-
 .lang-modal {
     max-width: 480px;
 }
@@ -540,7 +509,6 @@ meter {
     color: var(--muted);
 }
 
-/* Modal meter bar styling */
 .lang-modal-option .meter-bar {
     --meter-width: 120px;
 
@@ -548,7 +516,6 @@ meter {
     margin-top: var(--space-1);
 }
 
-/* Clickable proficiency elements */
 [data-editable-proficiency] {
     transition: opacity 0.15s ease;
     cursor: pointer;
@@ -582,8 +549,6 @@ meter {
     margin-block: var(--space-2) var(--space-0);
 }
 
-
-/* Editable elements - visual hint */
 [data-editable] {
     transition: background-color 0.15s ease;
     cursor: pointer;
@@ -597,7 +562,6 @@ meter {
     background-color: transparent;
 }
 
-/* Inline edit input styling */
 .inline-edit-input {
     width: 100%;
     padding: 0;
@@ -616,7 +580,6 @@ meter {
     border-bottom-color: var(--link);
 }
 
-/* Multiline textarea styling */
 .inline-edit-textarea {
     display: block;
     width: 100%;
@@ -638,18 +601,12 @@ meter {
     box-shadow: 0 0 0 3px rgb(194 0 167 / 10%);
 }
 
-/* ============================================
-   LIST MANAGEMENT CONTROLS
-   ============================================ */
-
-/* --- Position: relative for elements with remove buttons --- */
 [data-list] > li,
 [data-list] > article,
 .contact-item.social-item {
     position: relative;
 }
 
-/* --- Remove Button: Base styles --- */
 .list-remove-btn {
     position: absolute;
     display: flex;
@@ -665,14 +622,12 @@ meter {
     cursor: pointer;
 }
 
-/* --- Remove Button: Show on hover --- */
 [data-list] > li:hover > .list-remove-btn,
 [data-list] > article:hover > .list-remove-btn,
 .contact-item.social-item:hover > .list-remove-btn {
     opacity: 1;
 }
 
-/* --- Remove Button: Default <li> style (left side) --- */
 [data-list] > li > .list-remove-btn,
 .contact-item.social-item > .list-remove-btn {
     top: 30%;
@@ -691,7 +646,6 @@ meter {
     background: #dc2626;
 }
 
-/* --- Remove Button: <article> style (dashed button, left side) --- */
 [data-list] > article > .list-remove-btn {
     top: 5%;
     left: -2.25rem;
@@ -708,16 +662,12 @@ meter {
     background: rgb(220 38 38 / 5%);
 }
 
-/* --- Remove Button: Overrides for specific contexts --- */
-
-/* Bullets: align with text baseline */
 [data-list="bullets"] > li > .list-remove-btn {
     top: 0.15em;
     left: -3rem;
     transform: none;
 }
 
-/* Languages: smaller, closer to label */
 .lang-layout > li {
     padding-left: 1.5rem;
 }
@@ -728,7 +678,6 @@ meter {
     transform: none;
 }
 
-/* Social: smaller button */
 .contact-item.social-item > .list-remove-btn {
     top: 50%;
     left: 0.25rem;
@@ -737,7 +686,6 @@ meter {
     font-size: 1rem;
 }
 
-/* Add button styling */
 .list-add-wrapper {
     margin-block: var(--space-3);
     list-style: none;
@@ -767,7 +715,6 @@ meter {
     font-weight: 700;
 }
 
-/* Remove animation */
 [data-list] > li.removing,
 [data-list] > article.removing {
     opacity: 0;
@@ -775,7 +722,6 @@ meter {
     transform: translateX(-10px);
 }
 
-/* Shake animation for "can't delete last item" */
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     20%, 60% { transform: translateX(-5px); }
@@ -787,7 +733,6 @@ meter {
     animation: shake 0.4s ease;
 }
 
-/* Smaller add button for bullets */
 [data-list="bullets"] > .list-add-wrapper {
     margin-block: var(--space-2);
 }
@@ -820,7 +765,6 @@ meter {
         gap: var(--space-2);
     }
 
-    /* Hide separator on mobile - stacked layout doesn't need them */
     .contact-item::before {
         content: none;
     }
