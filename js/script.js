@@ -1,28 +1,6 @@
-/**
- *
- * - Inline text editing with data-editable attributes
- * - Add/remove list items with data-list containers
- * - Social media link support with smart username extraction
- * - Event delegation for performance
- * 
- * Supported edit types:
- * - data-editable="text"      → single-line input
- * - data-editable="multiline" → textarea
- * - data-editable="link"      → input that also updates href
- * 
- * List containers:
- * - data-list="skills|experience|education|training|languages"
- */
-
 (function() {
   'use strict';
-
-  // Track currently editing element to prevent conflicts
   let activeEditor = null;
-
-  // ============================================
-  // LANGUAGE PROFICIENCY LEVELS
-  // ============================================
 
   const PROFICIENCY_LEVELS = [
     { value: 1, label: 'Beginner', description: 'Basic words and phrases' },
@@ -32,11 +10,6 @@
     { value: 5, label: 'Native', description: 'Native or bilingual' }
   ];
 
-  /**
-   * Generate visual meter bar HTML with 5 segments
-   * @param {number} level - Proficiency level (1-5)
-   * @returns {string} HTML string for the meter bar
-   */
   function createMeterBarHTML(level) {
     const segments = [];
     for (let i = 1; i <= 5; i++) {
@@ -46,11 +19,6 @@
     return `<div class="meter-bar" data-editable-proficiency="true" title="Click to change proficiency">${segments.join('')}</div>`;
   }
 
-  /**
-   * Update visual meter bar segments based on level
-   * @param {HTMLElement} meterBar - The .meter-bar element
-   * @param {number} level - Proficiency level (1-5)
-   */
   function updateMeterBar(meterBar, level) {
     if (!meterBar) return;
     const segments = meterBar.querySelectorAll('.meter-segment');
@@ -63,16 +31,14 @@
     });
   }
 
-// SOCIAL MEDIA PLATFORMS DEFINITIONS
-
   const SOCIAL_PLATFORMS = {
     github: {
-      pattern: /github\.com\/([^\/\?]+)/i, 
+      pattern: /github\.com\/([^\/\?]+)/i,
       icon: '<svg viewBox="0 0 24 24" class="social-icon"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>',
       name: 'GitHub'
     },
     linkedin: {
-      pattern: /linkedin\.com\/in\/([^\/\?]+)/i, 
+      pattern: /linkedin\.com\/in\/([^\/\?]+)/i,
       icon: '<svg viewBox="0 0 24 24" class="social-icon"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
       name: 'LinkedIn'
     },
@@ -88,24 +54,14 @@
     }
   };
 
-  // ============================================
-  // RENDER FUNCTIONS (JSON → DOM)
-  // ============================================
-
-  /**
-   * Main render function - takes JSON data and renders the entire resume
-   * @param {Object} data - Resume data object
-   */
   function renderResume(data) {
     const header = document.querySelector('header.header');
     const main = document.querySelector('#main-content');
     if (!header || !main) return;
 
-    // Clear existing content
     header.innerHTML = '';
     main.innerHTML = '';
 
-    // Render each section
     renderHeader(header, data.header);
     renderSummary(main, data.summary);
     renderSkills(main, data.skills);
@@ -115,22 +71,16 @@
     renderLanguages(main, data.languages);
   }
 
-  /**
-   * Render the header section (name, contacts, socials)
-   */
   function renderHeader(container, headerData) {
-    // Name
     const h1 = document.createElement('h1');
     h1.id = 'name';
     h1.setAttribute('data-editable', 'text');
     h1.textContent = headerData.name;
     container.appendChild(h1);
 
-    // Address/contacts wrapper
     const address = document.createElement('address');
     address.className = 'address';
 
-    // Contact items (email, phone, location)
     headerData.contacts.forEach(contact => {
       const span = document.createElement('span');
       span.className = 'contact-item';
@@ -148,7 +98,7 @@
         a.textContent = contact.value;
         span.appendChild(a);
       } else {
-        // Location or other text-only contact
+
         span.setAttribute('data-editable', 'text');
         span.textContent = contact.value;
       }
@@ -156,10 +106,9 @@
       address.appendChild(span);
     });
 
-    // Social links
     headerData.socials.forEach(social => {
       const platformConfig = SOCIAL_PLATFORMS[social.platform] || SOCIAL_PLATFORMS.portfolio;
-      
+
       const span = document.createElement('span');
       span.className = 'contact-item social-item';
       span.innerHTML = `
@@ -179,12 +128,9 @@
     container.appendChild(address);
   }
 
-  /**
-   * Render the summary section
-   */
   function renderSummary(container, summaryText) {
     const section = document.createElement('section');
-    
+
     const h2 = document.createElement('h2');
     h2.className = 'title';
     h2.textContent = 'Summary';
@@ -199,12 +145,9 @@
     container.appendChild(section);
   }
 
-  /**
-   * Render the skills section (two-column layout)
-   */
   function renderSkills(container, skillsData) {
     const section = document.createElement('section');
-    
+
     const h2 = document.createElement('h2');
     h2.className = 'title';
     h2.textContent = 'Skills';
@@ -224,7 +167,7 @@
 
       const ul = document.createElement('ul');
       ul.setAttribute('data-list', 'skills');
-      
+
       skillGroup.items.forEach(item => {
         const li = document.createElement('li');
         li.setAttribute('data-editable', 'text');
@@ -240,112 +183,255 @@
     container.appendChild(section);
   }
 
-  // ============================================
-  // YOUR TURN: Implement these render functions
-  // Follow the same pattern as above
-  // ============================================
-
-  /**
-   * Render the experience section
-   * TODO: Implement this - follow renderSkills pattern
-   */
   function renderExperience(container, experienceData) {
-    // Your code here
-    console.log('TODO: renderExperience', experienceData);
+    const section = document.createElement('section');
+    section.className = 'experience-container';
+    section.setAttribute('data-list', 'experience');
+
+    const h2 = document.createElement('h2');
+    h2.className = 'title';
+    h2.textContent = 'Experience';
+    section.appendChild(h2);
+
+    experienceData.forEach(job => {
+      const article = document.createElement('article');
+      article.innerHTML = `
+        <div class="exp-detail">
+          <div class="company-date italic">
+            <p data-editable="text">${escapeHtml(job.company)}</p>
+            <p class="meta">
+              <time data-editable="text">${escapeHtml(job.startDate)}</time> -
+              <time data-editable="text">${escapeHtml(job.endDate)}</time>
+            </p>
+          </div>
+          <h3 data-editable="text">${escapeHtml(job.title)}</h3>
+        </div>
+        <ul class="experience" data-list="bullets">
+          ${job.bullets.map(b => `<li data-editable="text">${escapeHtml(b)}</li>`).join('')}
+        </ul>
+      `;
+      section.appendChild(article);
+    });
+
+    container.appendChild(section);
   }
 
-  /**
-   * Render the education section
-   * TODO: Implement this
-   */
   function renderEducation(container, educationData) {
-    // Your code here
-    console.log('TODO: renderEducation', educationData);
+    const section = document.createElement('section');
+    section.setAttribute('data-list', 'education');
+
+    const h2 = document.createElement('h2');
+    h2.className = 'title';
+    h2.textContent = 'Education';
+    section.appendChild(h2);
+
+    educationData.forEach(edu => {
+      const article = document.createElement('article');
+      article.className = 'education';
+      const institutionP = edu.institution
+        ? `<p data-editable="text" data-field="institution">${escapeHtml(edu.institution)}</p>`
+        : '';
+      article.innerHTML = `
+        <h3 data-editable="text">${escapeHtml(edu.degree)}</h3>
+        <div class="meta-wrapper italic">
+          <p>
+            <time data-editable="text">${escapeHtml(edu.startYear)}</time> -
+            <time data-editable="text">${escapeHtml(edu.endYear)}</time>
+          </p>
+          ${institutionP}
+          <p data-editable="text" data-field="location">${escapeHtml(edu.location)}</p>
+        </div>
+      `;
+      section.appendChild(article);
+    });
+
+    container.appendChild(section);
   }
 
-  /**
-   * Render the training section
-   * TODO: Implement this
-   */
   function renderTraining(container, trainingData) {
-    // Your code here
-    console.log('TODO: renderTraining', trainingData);
+    const section = document.createElement('section');
+    section.className = 'coursework-container';
+
+    const h2 = document.createElement('h2');
+    h2.className = 'title';
+    h2.textContent = 'Training';
+    section.appendChild(h2);
+
+    const article = document.createElement('article');
+    const ul = document.createElement('ul');
+    ul.setAttribute('data-list', 'training');
+
+    trainingData.forEach(item => {
+      const li = document.createElement('li');
+      li.setAttribute('data-editable', 'text');
+      li.textContent = item;
+      ul.appendChild(li);
+    });
+
+    article.appendChild(ul);
+    section.appendChild(article);
+    container.appendChild(section);
   }
 
-  /**
-   * Render the languages section
-   * TODO: Implement this - use createMeterBarHTML() for the meter bars
-   */
   function renderLanguages(container, languagesData) {
-    // Your code here
-    console.log('TODO: renderLanguages', languagesData);
+    const section = document.createElement('section');
+
+    const h2 = document.createElement('h2');
+    h2.className = 'title';
+    h2.textContent = 'Languages';
+    section.appendChild(h2);
+
+    const ul = document.createElement('ul');
+    ul.className = 'lang-layout';
+    ul.setAttribute('data-list', 'languages');
+
+    languagesData.forEach(lang => {
+      const level = lang.level || 3;
+      const proficiency = PROFICIENCY_LEVELS.find(p => p.value === level) || PROFICIENCY_LEVELS[2];
+      const id = 'lang-' + String(lang.name).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <label for="${id}" data-editable="text">${escapeHtml(lang.name)}</label>
+        <meter id="${id}" min="0" max="5" value="${level}" data-editable-proficiency="true"></meter>
+        <span class="sr-only">${escapeHtml(lang.name)} — ${level} of 5</span>
+        <p class="lang-description" data-editable-proficiency="true">${escapeHtml(proficiency.label)}</p>
+      `;
+      ul.appendChild(li);
+    });
+
+    section.appendChild(ul);
+    container.appendChild(section);
   }
 
-  // ============================================
-  // LOCAL STORAGE PERSISTENCE
-  // ============================================
-
-  const STORAGE_KEY = 'resume-builder:snapshot:v3';
-  const STORAGE_VERSION = 3;
+  const STORAGE_KEY = 'resume-builder:snapshot:v4';
+  const STORAGE_VERSION = 4;
   let saveTimer = null;
 
-  /**
-   * Remove UI-only / ephemeral nodes from a cloned subtree before saving.
-   */
-  function stripInteractiveNodes(root) {
-    // Remove controls and transient UI
-    root.querySelectorAll(
-      '.list-remove-btn,' +
-      '.list-add-wrapper,' +
-      '.add-social-btn,' +
-      '.social-modal-backdrop,' +
-      '.inline-edit-input,' +
-      '.inline-edit-textarea'
-    ).forEach(el => el.remove());
+  // Reverse lookup: platform display name (stored on the DOM) → config key
+  const PLATFORM_NAME_TO_KEY = Object.fromEntries(
+    Object.entries(SOCIAL_PLATFORMS).map(([key, cfg]) => [cfg.name, key])
+  );
 
-    // Remove inline editing state attributes
-    root.querySelectorAll('[data-editing], [data-original-text], [data-original-href]').forEach(el => {
-      el.removeAttribute('data-editing');
-      el.removeAttribute('data-original-text');
-      el.removeAttribute('data-original-href');
-    });
+  /**
+   * Read an element's text, ignoring injected UI controls (remove buttons).
+   */
+  function readText(el) {
+    if (!el) return '';
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('.list-remove-btn').forEach(btn => btn.remove());
+    return clone.textContent.trim();
   }
 
-  function buildSnapshot() {
+  /**
+   * Serialize the live DOM back into the resume JSON model.
+   * Inverse of renderResume(); JSON is the source of truth and storage format.
+   */
+  function serializeResume() {
     const header = document.querySelector('header.header');
     const main = document.querySelector('#main-content');
     if (!header || !main) return null;
 
-    const headerClone = header.cloneNode(true);
-    const mainClone = main.cloneNode(true);
+    // Header
+    const name = readText(header.querySelector('#name'));
 
-    stripInteractiveNodes(headerClone);
-    stripInteractiveNodes(mainClone);
+    const contacts = [];
+    header.querySelectorAll('.address > .contact-item:not(.social-item)').forEach(item => {
+      const email = item.querySelector('a[href^="mailto:"]');
+      const phone = item.querySelector('a[href^="tel:"]');
+      if (email) contacts.push({ type: 'email', value: readText(email) });
+      else if (phone) contacts.push({ type: 'phone', value: readText(phone) });
+      else contacts.push({ type: 'location', value: readText(item) });
+    });
+
+    const socials = [];
+    header.querySelectorAll('.address .social-item').forEach(item => {
+      const link = item.querySelector('.social-link');
+      if (!link) return;
+      const platformName = link.dataset.platform || 'Website';
+      socials.push({
+        platform: PLATFORM_NAME_TO_KEY[platformName] || 'portfolio',
+        url: link.getAttribute('href') || '',
+        username: readText(item.querySelector('.social-username'))
+      });
+    });
+
+    // Summary
+    const summary = readText(main.querySelector('.summary-paragraph'));
+
+    // Skills
+    const skills = [];
+    main.querySelectorAll('.core-tech > section.skills').forEach(group => {
+      skills.push({
+        category: readText(group.querySelector('h3')),
+        items: Array.from(group.querySelectorAll('ul[data-list="skills"] > li[data-editable]'))
+          .map(readText)
+      });
+    });
+
+    // Experience
+    const experience = [];
+    main.querySelectorAll('[data-list="experience"] > article').forEach(article => {
+      const times = article.querySelectorAll('.meta time');
+      experience.push({
+        company: readText(article.querySelector('.company-date > p[data-editable]')),
+        title: readText(article.querySelector('.exp-detail > h3')),
+        startDate: readText(times[0]),
+        endDate: readText(times[1]),
+        bullets: Array.from(article.querySelectorAll('ul[data-list="bullets"] > li[data-editable]'))
+          .map(readText)
+      });
+    });
+
+    // Education
+    const education = [];
+    main.querySelectorAll('[data-list="education"] > article').forEach(article => {
+      const times = article.querySelectorAll('.meta-wrapper time');
+      education.push({
+        degree: readText(article.querySelector('h3')),
+        institution: readText(article.querySelector('[data-field="institution"]')),
+        location: readText(article.querySelector('[data-field="location"]')),
+        startYear: readText(times[0]),
+        endYear: readText(times[1])
+      });
+    });
+
+    // Training
+    const training = Array.from(
+      main.querySelectorAll('[data-list="training"] > li[data-editable]')
+    ).map(readText);
+
+    // Languages
+    const languages = [];
+    main.querySelectorAll('[data-list="languages"] > li:not(.list-add-wrapper)').forEach(li => {
+      const meter = li.querySelector('meter');
+      languages.push({
+        name: readText(li.querySelector('label')),
+        level: meter ? parseInt(meter.value, 10) : 3
+      });
+    });
 
     return {
-      version: STORAGE_VERSION,
-      timestamp: Date.now(),
-      headerHtml: headerClone.innerHTML,
-      mainHtml: mainClone.innerHTML
+      meta: { version: 1 },
+      header: { name, contacts, socials },
+      summary,
+      skills,
+      experience,
+      education,
+      training,
+      languages
     };
-  }
-
-  function applySnapshot(snapshot) {
-    const header = document.querySelector('header.header');
-    const main = document.querySelector('#main-content');
-    if (!header || !main) return false;
-
-    header.innerHTML = snapshot.headerHtml;
-    main.innerHTML = snapshot.mainHtml;
-
-    return true;
   }
 
   function saveToStorage() {
     try {
-      const snapshot = buildSnapshot();
-      if (!snapshot) return;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+      const data = serializeResume();
+      if (!data) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        version: STORAGE_VERSION,
+        timestamp: Date.now(),
+        data
+      }));
     } catch (e) {
       console.warn('Failed to save to localStorage:', e);
     }
@@ -359,26 +445,38 @@
     }, 200);
   }
 
+  /**
+   * Load the saved resume data object from localStorage, or null if none/stale.
+   */
   function loadFromStorage() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return false;
+      if (!stored) return null;
 
       const snapshot = JSON.parse(stored);
-      if (!snapshot || snapshot.version !== STORAGE_VERSION) return false;
+      if (!snapshot || snapshot.version !== STORAGE_VERSION || !snapshot.data) return null;
 
-      const applied = applySnapshot(snapshot);
-
-      return applied;
+      return snapshot.data;
     } catch (e) {
       console.warn('Failed to load from localStorage:', e);
-      return false;
+      return null;
     }
   }
 
   /**
-   * Clear saved data from localStorage
+   * Read the default resume data embedded in the page (#resume-data script tag).
    */
+  function loadSeedData() {
+    try {
+      const el = document.getElementById('resume-data');
+      if (!el) return null;
+      return JSON.parse(el.textContent);
+    } catch (e) {
+      console.warn('Failed to parse seed resume data:', e);
+      return null;
+    }
+  }
+
   function clearStorage() {
     try {
       localStorage.removeItem(STORAGE_KEY);
@@ -389,62 +487,41 @@
     }
   }
 
-  // ============================================
-  // INITIALIZATION
-  // ============================================
-
   function init() {
-    // Load saved data first
-    loadFromStorage();
 
-    // Delegated click handler for edits and list controls
+    const data = loadFromStorage() || loadSeedData();
+    if (data) renderResume(data);
+
     document.addEventListener('click', handleClick);
-    
-    // Add visual hints for editable elements
+
     document.querySelectorAll('[data-editable]').forEach(el => {
       el.setAttribute('title', 'Click to edit');
     });
 
-    // Initialize list containers with add buttons
     initListContainers();
 
-    // Initialize social link button in address
     initSocialButton();
 
-    // Re-add remove buttons to social items (stripped during save)
     initSocialRemoveButtons();
 
-    // Initialize visual meter bars for existing language items
     initMeterBars();
   }
 
-  /**
-   * Add controls to list containers
-   */
   function initListContainers() {
     document.querySelectorAll('[data-list]').forEach(container => {
-      // Check if add button wrapper already exists to prevent duplicates
       const existingWrapper = container.querySelector(':scope > .list-add-wrapper');
       if (!existingWrapper) {
-        // Add the "add item" button at the end
         const addBtn = createAddButton(container.dataset.list, container.tagName);
         container.appendChild(addBtn);
       }
-
-      // Add remove buttons to existing items (always do this)
       const items = getListItems(container);
       items.forEach(item => addRemoveButton(item));
     });
   }
 
- 
-  // Add "Add Social" button to the address section
- 
   function initSocialButton() {
     const address = document.querySelector('.address');
     if (!address) return;
-
-    // Check if button already exists
     if (address.querySelector('.add-social-btn')) return;
 
     const btn = document.createElement('button');
@@ -455,14 +532,11 @@
     address.appendChild(btn);
   }
 
-  /**
-   * Re-add remove buttons to social items (stripped during localStorage save)
-   */
   function initSocialRemoveButtons() {
     document.querySelectorAll('.contact-item.social-item').forEach(item => {
-      // Skip if already has a remove button
+
       if (item.querySelector('.list-remove-btn')) return;
-      
+
       const platformName = item.querySelector('.social-link')?.dataset.platform || 'social';
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -473,40 +547,30 @@
     });
   }
 
-  /**
-   * Initialize visual meter bars for existing language items in the HTML
-   */
   function initMeterBars() {
     document.querySelectorAll('[data-list="languages"] meter').forEach(meter => {
-      // Skip if visual meter bar already exists
+
       if (meter.nextElementSibling && meter.nextElementSibling.classList.contains('meter-bar')) {
         return;
       }
-      
+
       const level = parseInt(meter.value, 10) || 3;
       const meterBarHTML = createMeterBarHTML(level);
-      
-      // Insert the visual meter bar after the hidden native meter
+
       meter.insertAdjacentHTML('afterend', meterBarHTML);
-      
-      // Remove the data-editable-proficiency from the native meter (it's now hidden)
+
       meter.removeAttribute('data-editable-proficiency');
     });
   }
 
-  // ============================================
-  // EVENT HANDLING
-  // ============================================
-
   function handleClick(e) {
-    // Handle "Add Social" button clicks
+
     if (e.target.closest('.add-social-btn')) {
       e.preventDefault();
       promptForSocialLink();
       return;
     }
 
-    // Handle proficiency editing (meter or description click)
     const proficiencyElement = e.target.closest('[data-editable-proficiency]');
     if (proficiencyElement) {
       e.preventDefault();
@@ -518,7 +582,6 @@
       return;
     }
 
-    // Handle add button clicks
     if (e.target.closest('.list-add-btn')) {
       e.preventDefault();
       const btn = e.target.closest('.list-add-btn');
@@ -529,12 +592,10 @@
       return;
     }
 
-    // Handle remove button clicks (both list items and social items)
     if (e.target.closest('.list-remove-btn')) {
       e.preventDefault();
       const btn = e.target.closest('.list-remove-btn');
-      
-      // Check if it's a social item (not inside a data-list container)
+
       const socialItem = btn.closest('.social-item');
       if (socialItem && !btn.closest('[data-list]')) {
         socialItem.classList.add('removing');
@@ -544,8 +605,7 @@
         }, 200);
         return;
       }
-      
-      // Regular list item
+
       const item = btn.closest('[data-list] > li, [data-list] > article');
       if (item) {
         removeListItem(item);
@@ -553,72 +613,54 @@
       return;
     }
 
-    // If clicking inside an active editor, let it handle itself
     if (e.target.closest('.inline-edit-input, .inline-edit-textarea')) {
       return;
     }
 
-    // Find the editable element (if any)
     const editable = e.target.closest('[data-editable]');
-    
-    // If clicking outside any editable while one is active, save and close
+
     if (!editable && activeEditor) {
       saveAndClose(activeEditor);
       return;
     }
 
-    // If no editable found, nothing to do
     if (!editable) return;
 
-    // If this element is already being edited, let it be
     if (editable.dataset.editing === 'true') return;
 
-    // If clicking a link inside an editable, let the link work
     if (e.target.tagName === 'A' && !e.target.closest('[data-editable="link"]')) {
       return;
     }
 
-    // Close any existing editor first
     if (activeEditor && activeEditor !== editable) {
       saveAndClose(activeEditor);
     }
 
-    // Prevent default for links and labels that are editable
     if (editable.tagName === 'A' || editable.tagName === 'LABEL') {
       e.preventDefault();
     }
 
-    // Start editing
     startEdit(editable);
   }
-
-  // ============================================
-  // INLINE EDITING
-  // ============================================
 
   function startEdit(element) {
     const type = element.dataset.editable;
     const currentText = getTextContent(element);
-    
+
     element.dataset.editing = 'true';
     element.dataset.originalText = currentText;
     activeEditor = element;
 
-    // Store original href for links
     if (type === 'link' && element.tagName === 'A') {
       element.dataset.originalHref = element.getAttribute('href') || '';
     }
 
-    // Create appropriate input
-    const input = type === 'multiline' 
+    const input = type === 'multiline'
       ? createTextarea(currentText, element)
       : createInput(currentText, element);
 
-    // Preserve remove button if present
     const removeBtn = element.querySelector('.list-remove-btn');
-    
-    // Clear text content but keep remove button
-    // Remove all child nodes except the remove button
+
     while (element.firstChild) {
       if (element.firstChild !== removeBtn) {
         element.removeChild(element.firstChild);
@@ -626,19 +668,17 @@
         break;
       }
     }
-    
-    // Insert input at the beginning
+
     element.insertBefore(input, element.firstChild);
     input.focus();
     input.select();
 
-    // Bind events
     input.addEventListener('keydown', (e) => handleKeydown(e, element));
     input.addEventListener('blur', (e) => handleBlur(e, element));
   }
 
   function getTextContent(element) {
-    // Get text content excluding remove button text
+
     const clone = element.cloneNode(true);
     const removeBtn = clone.querySelector('.list-remove-btn');
     if (removeBtn) removeBtn.remove();
@@ -665,7 +705,7 @@
 
   function handleKeydown(e, element) {
     const type = element.dataset.editable;
-    
+
     if (e.key === 'Escape') {
       e.preventDefault();
       cancelEdit(element);
@@ -706,19 +746,14 @@
     const originalText = element.dataset.originalText;
     const type = element.dataset.editable;
 
-    // Use original if empty (don't allow blank items via editing)
     const finalValue = newValue || originalText;
 
-    // Preserve any non-input children (like remove buttons) before replacing content
     const removeBtn = element.querySelector('.list-remove-btn');
-    
-    // Remove the input element
+
     input.remove();
-    
-    // Set the text as first child (creates a text node)
+
     element.insertBefore(document.createTextNode(finalValue), element.firstChild);
-    
-    // If there was a remove button, make sure it's still at the end
+
     if (removeBtn) {
       element.appendChild(removeBtn);
     }
@@ -728,27 +763,22 @@
     }
 
     cleanup(element);
-    
-    // Persist changes to localStorage
+
     scheduleSave();
-    
+
     return true;
   }
 
   function cancelEdit(element) {
     const originalText = element.dataset.originalText;
-    
-    // Preserve remove button before restoring content
+
     const removeBtn = element.querySelector('.list-remove-btn');
     const input = element.querySelector('.inline-edit-input, .inline-edit-textarea');
-    
-    // Remove the input
+
     if (input) input.remove();
-    
-    // Add the original text back
+
     element.insertBefore(document.createTextNode(originalText), element.firstChild);
-    
-    // Re-add remove button if it existed
+
     if (removeBtn) {
       element.appendChild(removeBtn);
     }
@@ -764,7 +794,7 @@
     delete element.dataset.editing;
     delete element.dataset.originalText;
     delete element.dataset.originalHref;
-    
+
     if (activeEditor === element) {
       activeEditor = null;
     }
@@ -772,7 +802,7 @@
 
   function updateLinkHref(link, text) {
     const originalHref = link.dataset.originalHref || '';
-    
+
     if (originalHref.startsWith('mailto:')) {
       link.setAttribute('href', 'mailto:' + text.replace(/\s/g, ''));
     } else if (originalHref.startsWith('tel:')) {
@@ -784,7 +814,7 @@
   function focusNextEditable(current, reverse = false) {
     const editables = Array.from(document.querySelectorAll('[data-editable]'));
     const currentIndex = editables.indexOf(current);
-    
+
     let nextIndex;
     if (reverse) {
       nextIndex = currentIndex <= 0 ? editables.length - 1 : currentIndex - 1;
@@ -798,26 +828,16 @@
     }
   }
 
-
-
-  /**
-   * Get the direct list item children of a container
-   */
   function getListItems(container) {
     const listType = container.dataset.list;
-    
-    // For UL containers, get LI children (excluding the add button wrapper)
+
     if (container.tagName === 'UL') {
       return Array.from(container.querySelectorAll(':scope > li:not(.list-add-wrapper)'));
     }
-    
-    // For section containers (experience, education), get article children
+
     return Array.from(container.querySelectorAll(':scope > article'));
   }
 
-  /**
-   * Get descriptive label for list type
-   */
   function getListLabel(listType) {
     const labels = {
       skills: 'Skill',
@@ -830,69 +850,54 @@
     return labels[listType] || 'Item';
   }
 
-  /**
-   * Create the "Add" button for a list
-   * @param {string} listType - Type of list (skills, experience, etc.)
-   * @param {string} containerTag - Tag name of the container element
-   */
   function createAddButton(listType, containerTag) {
-    // Use appropriate wrapper element based on container type
-    // <li> for UL/OL lists, <div> for section/article containers
+
     const isListContainer = containerTag === 'UL' || containerTag === 'OL';
     const wrapper = document.createElement(isListContainer ? 'li' : 'div');
     wrapper.className = 'list-add-wrapper';
-    
+
     const label = getListLabel(listType);
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'list-add-btn';
     btn.setAttribute('aria-label', `Add ${label}`);
     btn.innerHTML = `<span class="list-add-icon">+</span> Add ${label}`;
-    
+
     wrapper.appendChild(btn);
     return wrapper;
   }
 
-  /**
-   * Add remove button to a list item
-   */
   function addRemoveButton(item) {
-    // Don't add if already has one
+
     if (item.querySelector(':scope > .list-remove-btn')) return;
-    
-    // Determine the item type from parent container
+
     const container = item.closest('[data-list]');
     const listType = container ? container.dataset.list : 'item';
     const label = getListLabel(listType);
-    
+
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'list-remove-btn';
     btn.setAttribute('aria-label', `Remove ${label}`);
     btn.setAttribute('title', `Remove ${label}`);
     btn.innerHTML = '×';
-    
+
     item.style.position = 'relative';
     item.appendChild(btn);
   }
 
-  /**
-   * Add a new item to a list container
-   */
   function addListItem(container) {
     const listType = container.dataset.list;
-    
-    // Languages use a modal for input
+
     if (listType === 'languages') {
       showLanguageModal(null, container);
       return;
     }
-    
-    // Use :scope > to find only direct child wrapper, not nested ones
+
     const addWrapper = container.querySelector(':scope > .list-add-wrapper');
-    
+
     let newItem;
-    
+
     switch (listType) {
       case 'skills':
       case 'training':
@@ -910,63 +915,42 @@
       default:
         newItem = createSkillItem();
     }
-    
-    // Insert before the add button
+
     container.insertBefore(newItem, addWrapper);
-    
-    // Add remove button to the new item
+
     addRemoveButton(newItem);
-    
-    // Initialize any nested data-list containers (e.g., bullets inside experience)
+
     newItem.querySelectorAll('[data-list]').forEach(nestedContainer => {
       const nestedAddBtn = createAddButton(nestedContainer.dataset.list, nestedContainer.tagName);
       nestedContainer.appendChild(nestedAddBtn);
-      
-      // Add remove buttons to existing items in nested container
+
       getListItems(nestedContainer).forEach(item => addRemoveButton(item));
     });
-    
-    // Focus the first editable in the new item
+
     const firstEditable = newItem.querySelector('[data-editable]');
     if (firstEditable) {
       setTimeout(() => firstEditable.click(), 50);
     }
 
-    //
-    //
-    //
-
-
-
-    // Persist structural change (new item)
     scheduleSave();
   }
 
-  /**
-   * Remove a list item with confirmation
-   */
   function removeListItem(item) {
     const container = item.closest('[data-list]');
     const items = getListItems(container);
-    
-    // Don't allow removing the last item
+
     if (items.length <= 1) {
       item.classList.add('shake');
       setTimeout(() => item.classList.remove('shake'), 500);
       return;
     }
-    
-    // Animate out then remove
+
     item.classList.add('removing');
     setTimeout(() => {
       item.remove();
       scheduleSave();
     }, 200);
   }
-
-  // ============================================
-  // ITEM TEMPLATES
-  // ============================================
 
   function createSkillItem() {
     const li = document.createElement('li');
@@ -991,7 +975,7 @@
         <div class="company-date italic">
           <p data-editable="text">Company Name</p>
           <p class="meta">
-            <time data-editable="text">Start Date</time> - 
+            <time data-editable="text">Start Date</time> -
             <time data-editable="text">End Date</time>
           </p>
         </div>
@@ -1001,12 +985,11 @@
         <li data-editable="text">Describe your responsibility or achievement</li>
       </ul>
     `;
-    
-    // Add title hints to editables
+
     article.querySelectorAll('[data-editable]').forEach(el => {
       el.setAttribute('title', 'Click to edit');
     });
-    
+
     return article;
   }
 
@@ -1020,15 +1003,15 @@
           <time data-editable="text">Start Year</time> -
           <time data-editable="text">End Year</time>
         </p>
-        <p data-editable="text">Institution Name</p>
-        <p data-editable="text">Location</p>
+        <p data-editable="text" data-field="institution">Institution Name</p>
+        <p data-editable="text" data-field="location">Location</p>
       </div>
     `;
-    
+
     article.querySelectorAll('[data-editable]').forEach(el => {
       el.setAttribute('title', 'Click to edit');
     });
-    
+
     return article;
   }
 
@@ -1036,7 +1019,7 @@
     const li = document.createElement('li');
     const id = 'lang-' + Date.now();
     const proficiency = PROFICIENCY_LEVELS.find(p => p.value === level) || PROFICIENCY_LEVELS[2];
-    
+
     li.innerHTML = `
       <label for="${id}" data-editable="text">${name}</label>
       <meter id="${id}" min="0" max="5" value="${level}"></meter>
@@ -1044,28 +1027,20 @@
       <span class="sr-only">${name} — ${level} of 5</span>
       <p class="lang-description" data-editable-proficiency="true">${proficiency.label}</p>
     `;
-    
-    // Only the label is directly text-editable
+
     li.querySelector('label').setAttribute('title', 'Click to edit name');
-    
-    // Meter bar and description open the proficiency modal
+
     li.querySelector('.lang-description').setAttribute('title', 'Click to change proficiency');
-    
+
     return li;
   }
 
-  /**
-   * Show modal to add or edit a language
-   * @param {HTMLElement|null} existingItem - If editing, the existing li element; null for new
-   * @param {HTMLElement} container - The languages container
-   */
   function showLanguageModal(existingItem, container) {
     const isEditing = existingItem !== null;
-    
-    // Get current values if editing
+
     let currentName = '';
     let currentLevel = 3;
-    
+
     if (isEditing) {
       const label = existingItem.querySelector('label');
       const meter = existingItem.querySelector('meter');
@@ -1073,7 +1048,6 @@
       currentLevel = meter ? parseInt(meter.value, 10) : 3;
     }
 
-    // Build proficiency options HTML
     const optionsHtml = PROFICIENCY_LEVELS.map(p => `
       <label class="lang-modal-option ${p.value === currentLevel ? 'selected' : ''}">
         <input type="radio" name="proficiency" value="${p.value}" ${p.value === currentLevel ? 'checked' : ''}>
@@ -1085,7 +1059,6 @@
       </label>
     `).join('');
 
-    // Create backdrop
     const backdrop = document.createElement('div');
     backdrop.className = 'social-modal-backdrop lang-modal-backdrop';
     backdrop.innerHTML = `
@@ -1093,10 +1066,10 @@
         <h3 id="lang-modal-title">${isEditing ? 'Edit Language' : 'Add Language'}</h3>
         <div class="lang-modal-field">
           <label for="lang-name-input" class="lang-modal-label">Language Name</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             id="lang-name-input"
-            class="social-modal-input lang-modal-input" 
+            class="social-modal-input lang-modal-input"
             placeholder="e.g., Spanish, Mandarin, French"
             value="${currentName}"
           >
@@ -1123,32 +1096,27 @@
     const submitBtn = backdrop.querySelector('.social-modal-btn.submit');
     const optionLabels = backdrop.querySelectorAll('.lang-modal-option');
 
-    // Show with animation
     requestAnimationFrame(() => {
       backdrop.classList.add('visible');
       nameInput.focus();
       nameInput.select();
     });
 
-    // Close modal helper
     function closeModal() {
       backdrop.classList.remove('visible');
       setTimeout(() => backdrop.remove(), 200);
     }
 
-    // Show error helper
     function showError(message) {
       errorEl.textContent = message;
       nameInput.classList.add('error');
     }
 
-    // Clear error helper
     function clearError() {
       errorEl.textContent = '';
       nameInput.classList.remove('error');
     }
 
-    // Handle option selection (visual feedback)
     optionLabels.forEach(label => {
       label.addEventListener('click', () => {
         optionLabels.forEach(l => l.classList.remove('selected'));
@@ -1156,7 +1124,6 @@
       });
     });
 
-    // Handle submit
     function handleSubmit() {
       const name = nameInput.value.trim();
       const selectedRadio = backdrop.querySelector('input[name="proficiency"]:checked');
@@ -1169,10 +1136,10 @@
       }
 
       if (isEditing) {
-        // Update existing item
+
         updateLanguageItem(existingItem, name, level);
       } else {
-        // Create new item
+
         const newItem = createLanguageItem(name, level);
         const addWrapper = container.querySelector(':scope > .list-add-wrapper');
         container.insertBefore(newItem, addWrapper);
@@ -1183,7 +1150,6 @@
       closeModal();
     }
 
-    // Event listeners
     cancelBtn.addEventListener('click', closeModal);
     submitBtn.addEventListener('click', handleSubmit);
 
@@ -1198,14 +1164,12 @@
       }
     });
 
-    // Close on backdrop click
     backdrop.addEventListener('click', (e) => {
       if (e.target === backdrop) {
         closeModal();
       }
     });
 
-    // Close on Escape
     backdrop.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeModal();
@@ -1213,52 +1177,38 @@
     });
   }
 
-  /**
-   * Update an existing language item with new values
-   */
   function updateLanguageItem(item, name, level) {
     const proficiency = PROFICIENCY_LEVELS.find(p => p.value === level) || PROFICIENCY_LEVELS[2];
-    
+
     const label = item.querySelector('label');
     const meter = item.querySelector('meter');
     const meterBar = item.querySelector('.meter-bar');
     const srOnly = item.querySelector('.sr-only');
     const description = item.querySelector('.lang-description');
-    
+
     if (label) label.textContent = name;
     if (meter) meter.value = level;
     if (meterBar) updateMeterBar(meterBar, level);
     if (srOnly) srOnly.textContent = `${name} — ${level} of 5`;
     if (description) description.textContent = proficiency.label;
-    
-    // Persist changes
+
     scheduleSave();
   }
 
-  // ============================================
-  // SOCIAL LINKS
-  // ============================================
-
-  /**
-   * Show modal to add a social media URL
-   */
   function promptForSocialLink() {
     showSocialModal();
   }
 
-  /**
-   * Create and show the social link modal
-   */
   function showSocialModal() {
-    // Create backdrop
+
     const backdrop = document.createElement('div');
     backdrop.className = 'social-modal-backdrop';
     backdrop.innerHTML = `
       <div class="social-modal" role="dialog" aria-labelledby="social-modal-title">
         <h3 id="social-modal-title">Add Social Link</h3>
-        <input 
-          type="url" 
-          class="social-modal-input" 
+        <input
+          type="url"
+          class="social-modal-input"
           placeholder="https://github.com/username"
           aria-describedby="social-modal-hint social-modal-error"
         >
@@ -1278,32 +1228,27 @@
     const cancelBtn = backdrop.querySelector('.social-modal-btn.cancel');
     const submitBtn = backdrop.querySelector('.social-modal-btn.submit');
 
-    // Show with animation
     requestAnimationFrame(() => {
       backdrop.classList.add('visible');
       input.focus();
     });
 
-    // Close modal helper
     function closeModal() {
       backdrop.classList.remove('visible');
       setTimeout(() => backdrop.remove(), 200);
     }
 
-    // Show error helper
     function showError(message) {
       errorEl.textContent = message;
       input.classList.add('error');
       input.focus();
     }
 
-    // Clear error helper
     function clearError() {
       errorEl.textContent = '';
       input.classList.remove('error');
     }
 
-    // Handle submit
     function handleSubmit() {
       const url = input.value.trim();
 
@@ -1322,14 +1267,12 @@
         return;
       }
 
-      // Success - create the link and close
       const socialData = parseSocialUrl(url);
       createSocialLink(socialData);
       scheduleSave();
       closeModal();
     }
 
-    // Event listeners
     cancelBtn.addEventListener('click', closeModal);
     submitBtn.addEventListener('click', handleSubmit);
 
@@ -1344,7 +1287,6 @@
       }
     });
 
-    // Close on backdrop click
     backdrop.addEventListener('click', (e) => {
       if (e.target === backdrop) {
         closeModal();
@@ -1352,13 +1294,10 @@
     });
   }
 
-  /**
-   * Check if a social link with this URL already exists
-   */
   function socialLinkExists(url) {
     const existingLinks = document.querySelectorAll('.social-item .social-link');
     const normalizedUrl = normalizeUrl(url);
-    
+
     for (const link of existingLinks) {
       if (normalizeUrl(link.href) === normalizedUrl) {
         return true;
@@ -1367,22 +1306,16 @@
     return false;
   }
 
-  /**
-   * Normalize URL for comparison (remove trailing slashes, lowercase)
-   */
   function normalizeUrl(url) {
     try {
       const parsed = new URL(url);
-      // Lowercase host, remove trailing slash from pathname
+
       return (parsed.host + parsed.pathname).toLowerCase().replace(/\/+$/, '');
     } catch {
       return url.toLowerCase().replace(/\/+$/, '');
     }
   }
 
-  /**
-   * Check if string is a valid URL
-   */
   function isValidUrl(string) {
     try {
       const url = new URL(string);
@@ -1391,15 +1324,9 @@
       return false;
     }
   }
-
-  /**
-   * Parse a social URL and extract platform info and username
-   */
   function parseSocialUrl(url) {
-    // Try to match known platforms
     for (const [key, platform] of Object.entries(SOCIAL_PLATFORMS)) {
-      if (key === 'portfolio') continue; // Skip generic fallback
-      
+      if (key === 'portfolio') continue;
       const match = url.match(platform.pattern);
       if (match) {
         return {
@@ -1411,11 +1338,10 @@
         };
       }
     }
-    
-    // Fallback to generic website/portfolio
+
     const domainMatch = url.match(SOCIAL_PLATFORMS.portfolio.pattern);
     const domain = domainMatch ? domainMatch[1].replace(/^www\./, '') : 'website';
-    
+
     return {
       platform: 'portfolio',
       username: domain,
@@ -1425,21 +1351,18 @@
     };
   }
 
-  /**
-   * Create and insert a social link element
-   */
   function createSocialLink(data) {
     const address = document.querySelector('.address');
     const addBtn = address.querySelector('.add-social-btn');
-    
+
     if (!address || !addBtn) return;
-    
+
     const span = document.createElement('span');
     span.className = 'contact-item social-item';
     span.innerHTML = `
-      <a href="${escapeHtml(data.url)}" 
-         target="_blank" 
-         rel="noopener noreferrer" 
+      <a href="${escapeHtml(data.url)}"
+         target="_blank"
+         rel="noopener noreferrer"
          class="social-link"
          title="${escapeHtml(data.name)}"
          data-platform="${escapeHtml(data.name)}">
@@ -1448,23 +1371,15 @@
       </a>
       <button type="button" class="list-remove-btn" aria-label="Remove ${escapeHtml(data.name)} link">×</button>
     `;
-    
-    // Insert before the add button
+
     address.insertBefore(span, addBtn);
   }
 
-  /**
-   * Escape HTML special characters
-   */
   function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
   }
-
-  // ============================================
-  // BOOTSTRAP
-  // ============================================
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

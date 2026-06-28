@@ -6,21 +6,21 @@
     <title>Resume — John Doe</title>
     <meta name="description" content="Professional resume of John Doe - Junior Web Developer with retail operations experience, skilled in HTML/CSS, JavaScript, Python, and MySQL.">
     <meta name="author" content="John Doe">
-    
+
     <!-- Prevent indexing if this is a personal resume -->
     <meta name="robots" content="noindex, nofollow">
-    
+
     <!-- Open Graph for social sharing -->
     <meta property="og:title" content="Resume — John Doe">
     <meta property="og:description" content="Junior Web Developer with hands-on retail operations experience.">
     <meta property="og:type" content="website">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
-    
+
     <!-- Theme color for mobile browsers -->
     <meta name="theme-color" content="#2e3038">
-    
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/print.css" media="print">
 </head>
@@ -36,210 +36,122 @@
         <span class="print-btn-text">Print / PDF</span>
     </button>
 
-    <!-- Contact Information-->
-    <header class="header">
-        <h1 id="name" data-editable="text">John Doe</h1>
-        <address class="address">
-             <span class="contact-item"><a href="mailto:Doe.thegoat@example.com" data-editable="link">Doe.thegoat@example.com</a></span>  
-             <span class="contact-item"><a href="tel:+1-555-123-4567" data-editable="link">+1 555-123-4567</a></span>
-             <span class="contact-item" data-editable="text">Toronto, ON</span> 
-             <span class="contact-item social-item">
-                <a href="https://github.com/amdan808"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="social-link"
-                   title="GitHub"
-                   data-platform="GitHub">
-                    <svg viewBox="0 0 24 24" class="social-icon"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                    <span class="social-username">amdan808</span>
-                </a>
-             </span>
-            <!-- user can new item(social media, linkeding etc..)-->
-            
-        </address>
-    </header>
+    <!--
+      Resume content is the JSON below. js/script.js renders it into the
+      containers and serializes edits back to this shape in localStorage.
+      Edit this seed to change the default resume, or edit inline in the browser.
+    -->
+    <script type="application/json" id="resume-data">
+    {
+      "meta": { "version": 1 },
+      "header": {
+        "name": "John Doe",
+        "contacts": [
+          { "type": "email", "value": "Doe.thegoat@example.com" },
+          { "type": "phone", "value": "+1 555-123-4567" },
+          { "type": "location", "value": "Toronto, ON" }
+        ],
+        "socials": [
+          { "platform": "github", "url": "https://github.com/amdan808", "username": "amdan808" }
+        ]
+      },
+      "summary": "Junior web developer with hands-on retail operations experience. Skilled in HTML/CSS, modern JavaScript basics, Python scripting, and MySQL for reporting. Comfortable using Git/GitHub in small teams, building accessible responsive pages, and improving store workflows. Looking for entry-level frontend or full-stack roles where I can ship practical features and keep learning.",
+      "skills": [
+        {
+          "category": "Store Operations",
+          "items": [
+            "Cash handling and POS across cash, debit, credit, and gift",
+            "Daily reconciliation and maintaining audit-ready logs",
+            "Pick, pack, and stage online orders; process Click & Collect handoffs",
+            "Assist customers with product lookups and course materials",
+            "Greet customers, manage queues, and resolve EAS/tag alarms"
+          ]
+        },
+        {
+          "category": "Technical & Tools",
+          "items": [
+            "HTML5 and CSS3 for responsive layouts, and core JavaScript (ES6+) essentials",
+            "POS systems, barcode scanners, and basic device troubleshooting",
+            "Python for small automation scripts and microcontroller demos",
+            "MySQL basics for querying and simple reports",
+            "Git & GitHub for version control and collaboration"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "company": "Portfolio Project",
+          "title": "Web App Development & Team Collaboration",
+          "startDate": "May 2025",
+          "endDate": "Aug 2025",
+          "bullets": [
+            "Built responsive, semantic pages (HTML5/CSS3) and interactive features (vanilla JavaScript) focusing on accessibility and performance.",
+            "Collaborated in small teams using Git/GitHub (branches, pull requests) to plan work, review code, and demo outcomes.",
+            "Developed Python scripts for reading simple sensor data and integrating with demo hardware.",
+            "Designed basic relational schemas and wrote MySQL queries (joins, aggregates) for reporting features."
+          ]
+        },
+        {
+          "company": "ABC Retail Store",
+          "title": "Store Management & IT Operations",
+          "startDate": "Jan 2022",
+          "endDate": "Dec 2024",
+          "bullets": [
+            "Operated the register and processed payments and refunds across cash, debit, and credit with accurate receipts.",
+            "Reconciled end-of-day transactions and maintained clean digital records for audit and reporting.",
+            "Picked and prepared customer orders; labeled items and confirmed contents before handoff.",
+            "Answered in-person and phone inquiries and routed requests appropriately.",
+            "Assisted with stocking and merchandising to keep the sales floor organized.",
+            "Verified purchases and resolved gate alarms by checking items and removing/deactivating tags."
+          ]
+        }
+      ],
+      "education": [
+        {
+          "degree": "Community College",
+          "institution": "",
+          "location": "Toronto, Ontario",
+          "startYear": "2025",
+          "endYear": "Present"
+        },
+        {
+          "degree": "Bachelor in Telecommunication Engineering",
+          "institution": "University of Technology",
+          "location": "Montreal, Quebec",
+          "startYear": "2021",
+          "endYear": "2024"
+        },
+        {
+          "degree": "Bachelor of Economic Sciences and Business Management",
+          "institution": "Business University",
+          "location": "Vancouver, British Columbia",
+          "startYear": "2017",
+          "endYear": "2021"
+        }
+      ],
+      "training": [
+        "Web Development Fundamentals (HTML/CSS, responsive design, accessibility)",
+        "JavaScript & DOM Manipulation (ES6+, async/await, event-driven programming)",
+        "Database Design & SQL (MySQL schema design, CRUD operations)",
+        "Version Control & Collaboration (Git, GitHub workflows)",
+        "Professional Communication & Teamwork (presentations, Agile-style collaboration)",
+        "Digital Tools in Practice (VS Code, basic Photoshop, DaVinci Resolve)"
+      ],
+      "languages": [
+        { "name": "English", "level": 5 },
+        { "name": "French", "level": 4 },
+        { "name": "Spanish", "level": 3 },
+        { "name": "German", "level": 2 }
+      ]
+    }
+    </script>
 
-    <main id="main-content" class="container">
-        <!-- Summary-->
-         <section>
-            <h2 class="title"> Summary</h2>
-           <p class="summary-paragraph" data-editable="multiline">Junior web developer with hands-on retail operations experience. Skilled in HTML/CSS, modern JavaScript basics, Python scripting, and MySQL for reporting. Comfortable using Git/GitHub in small teams, building accessible responsive pages, and improving store workflows. Looking for entry-level frontend or full-stack roles where I can ship practical features and keep learning.</p>
+    <!-- Contact Information (rendered from #resume-data) -->
+    <header class="header"></header>
 
-        </section>
+    <!-- Resume body (rendered from #resume-data) -->
+    <main id="main-content" class="container"></main>
 
-        <!-- Skills -->
-        <section>
-            <h2 class="title"> Skills</h2>
-            <div class="core-tech">
-                <!-- Store Operations -->
-                <section class="skills core">
-                    <h3 data-editable="text">Store Operations</h3>
-                    <ul data-list="skills">
-                        <li data-editable="text">Cash handling and POS across cash, debit, credit, and gift</li>
-                        <li data-editable="text">Daily reconciliation and maintaining audit-ready logs</li>
-                        <li data-editable="text">Pick, pack, and stage online orders; process Click & Collect handoffs</li>
-                        <li data-editable="text">Assist customers with product lookups and course materials</li>
-                        <li data-editable="text">Greet customers, manage queues, and resolve EAS/tag alarms</li>
-  </ul>
-                </section>
-
-                <!-- Technical & Tools -->
-                <section class="skills tech">
-                    <h3 data-editable="text">Technical & Tools</h3>
-                    <ul data-list="skills">
-                        <li data-editable="text">HTML5 & CSS3 (responsive layouts) and JavaScript fundamentals (ES6+)</li>
-                        <li data-editable="text">POS systems, barcode scanners, and basic device troubleshooting</li>
-                        <li data-editable="text">Python for small automation scripts and microcontroller demos</li>
-                        <li data-editable="text">MySQL basics for querying and simple reports</li>
-                        <li data-editable="text">Git & GitHub for version control and collaboration</li>
-                    </ul>
-                </section>
-                </div>
-
-        </section>
-
-        <!-- Experiences Heading-->    
-        <section class="experience-container" data-list="experience">
-            <h2 class="title">Experience</h2>
-
-            <!-- Exp n1 -->
-            <article>
-                <div class="exp-detail">
-                <div class="company-date italic"> 
-                        <p data-editable="text">Portfolio Project</p>
-                    <p class="meta">
-                            <time datetime="2025-05-01" data-editable="text">May 2025</time> -  
-                            <time datetime="2025-08-18" data-editable="text">Aug 2025</time> 
-                    </p>
-                    </div>
-                    <h3 data-editable="text">Web App Development & Team Collaboration</h3>
-                </div>
-                <ul class="experience" data-list="bullets">
-                    <li data-editable="text">Built responsive, semantic pages (HTML5/CSS3) and interactive features (vanilla JavaScript) focusing on accessibility and performance.</li>
-                    <li data-editable="text">Collaborated in small teams using Git/GitHub (branches, pull requests) to plan work, review code, and demo outcomes.</li>
-                    <li data-editable="text">Developed Python scripts for reading simple sensor data and integrating with demo hardware.</li>
-                    <li data-editable="text">Designed basic relational schemas and wrote MySQL queries (joins, aggregates) for reporting features.</li>
-                    </ul>
-            </article>
-
-            <!-- Exp n2 -->
-            <article>
-                <div class="exp-detail">
-                <div class="company-date italic"> 
-                        <p data-editable="text">ABC Retail Store</p>
-                    <p class="meta">
-                            <time datetime="2022-01-01" data-editable="text">Jan 2022</time> -  
-                            <time datetime="2024-12-31" data-editable="text">Dec 2024</time> 
-                    </p>
-                </div>
-                    <h3 data-editable="text">Store Management & IT Operations</h3>
-                </div>    
-                <ul class="experience" data-list="bullets">
-                    <li data-editable="text">Operated the register and processed payments and refunds across cash, debit, and credit with accurate receipts.</li>
-                    <li data-editable="text">Reconciled end-of-day transactions and maintained clean digital records for audit and reporting.</li>
-                    <li data-editable="text">Picked and prepared customer orders; labeled items and confirmed contents before handoff.</li>
-                    <li data-editable="text">Answered in-person and phone inquiries and routed requests appropriately.</li>
-                    <li data-editable="text">Assisted with stocking and merchandising to keep the sales floor organized.</li>
-                    <li data-editable="text">Verified purchases and resolved gate alarms by checking items and removing/deactivating tags.</li>
-                </ul>
-            </article>
-
-             <!-- Exp n3 -->
-
-        </section>
-
-        <!-- Education -->
-        <section data-list="education">
-            <h2 class="title">Education</h2>
-
-            <!-- Educ n1-->
-            <article class="education">
-                <h3 data-editable="text">Community College</h3>
-                <div class="meta-wrapper italic">
-                    <p> 
-                        <time datetime="2025" data-editable="text">2025</time> -
-                        <time data-editable="text">Present</time>
-                    </p>
-                    <p data-editable="text">Toronto, Ontario</p>   
-                </div>
-            </article>
-
-            <!-- Educ n2-->
-            <article class="education">
-                <h3 data-editable="text">Bachelor in Telecommunication Engineering</h3>
-                <div class="meta-wrapper italic">
-                    <p> 
-                        <time datetime="2021" data-editable="text">2021</time> -
-                        <time datetime="2024" data-editable="text">2024</time>
-                    </p>
-                    <p data-editable="text">University of Technology</p>   
-                    <p data-editable="text">Montreal, Quebec</p>
-                </div>
-            </article>
-            
-            <!-- Educ n3-->
-             <article class="education">
-                <h3 data-editable="text">Bachelor of Economic Sciences and Business Management</h3>
-                    <div class="meta-wrapper italic">
-                        <p>
-                        <time datetime="2017" data-editable="text">2017</time> –
-                        <time datetime="2021" data-editable="text">2021</time>
-                        </p>
-                    <p data-editable="text">Business University</p>
-                    <p data-editable="text">Vancouver, British Columbia</p>
-                </div>
-            </article>
-
-
-
-        </section>
-
-        <!-- Coursework -->    
-        <section class="coursework-container">
-            <h2 class="title">Training</h2>
-            <article>
-                <ul data-list="training">
-                    <li data-editable="text">Web Development Fundamentals (HTML/CSS, responsive design, accessibility)</li>
-                    <li data-editable="text">JavaScript & DOM Manipulation (ES6+, async/await, event-driven programming)</li>
-                    <li data-editable="text">Database Design & SQL (MySQL schema design, CRUD operations)</li>
-                    <li data-editable="text">Version Control & Collaboration (Git, GitHub workflows)</li>
-                    <li data-editable="text">Professional Communication & Teamwork (presentations, Agile-style collaboration)</li>
-                    <li data-editable="text">Digital Tools in Practice (VS Code, basic Photoshop, DaVinci Resolve)</li>
-                </ul>
-            </article>
-        </section>
-
-        <!-- Languages-->
-         <section>
-            <h2 class="title">Languages</h2>
-            <ul class="lang-layout" data-list="languages">
-                <li> 
-                    <label for="english" data-editable="text">English</label>
-                    <meter id="english" min="0" max="5" value="5" data-editable-proficiency="true"></meter>
-                    <span class="sr-only">English — 5 of 5</span>
-                    <p class="lang-description" data-editable-proficiency="true">Native</p>
-                </li>
-                <li>    
-                    <label for="french" data-editable="text">French</label>
-                    <meter id="french" min="0" max="5" value="4" data-editable-proficiency="true"></meter>
-                    <span class="sr-only">French — 4 of 5</span>
-                    <p class="lang-description" data-editable-proficiency="true">Fluent</p>
-                </li>
-                <li>
-                    <label for="spanish" data-editable="text">Spanish</label>
-                    <meter id="spanish" min="0" max="5" value="3" data-editable-proficiency="true"></meter>
-                    <span class="sr-only">Spanish — 3 of 5</span>
-                    <p class="lang-description" data-editable-proficiency="true">Intermediate</p>
-                </li>
-                <li>    
-                    <label for="german" data-editable="text">German</label>
-                    <meter id="german" min="0" max="5" value="2" data-editable-proficiency="true"></meter>
-                    <span class="sr-only">German — 2 of 5</span>
-                    <p class="lang-description" data-editable-proficiency="true">Elementary</p>
-                </li>    
-                </ul>
-        </section>
-    </main>
     <script src="js/script.js"></script>
 </body>
 </html>

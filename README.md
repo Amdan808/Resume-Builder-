@@ -45,21 +45,29 @@ A clean, print-ready resume template with inline editing, built with plain HTML,
 - Multiline fields: Use Shift+Enter or Ctrl+Enter to save, or click outside to save.
 - Tab moves to the next editable field; Shift+Tab goes back.
 - Language proficiency: Click the meter bar or label to change the level.
-- Changes are saved in `localStorage` under `resume-builder:snapshot:v3`.
-- If you edit `index.html` directly, clear that key to see the new base content.
+- Changes are saved in `localStorage` under `resume-builder:snapshot:v4` as the resume JSON.
+- The default resume is the JSON in the `#resume-data` script tag in `index.html`. If you edit that seed, clear the storage key (or use a fresh browser profile) to see the new base content.
+
+## How It Works
+
+The resume is data-driven. `index.html` contains an inline JSON block
+(`<script type="application/json" id="resume-data">`) and two empty containers.
+On load, `js/script.js` renders that JSON into the page (`renderResume`), and
+every edit is serialized back to the same JSON shape (`serializeResume`) and
+saved to `localStorage`. Saved data takes precedence over the inline seed.
 
 ## File Structure
 
 ```
 resume-builder/
-├── index.html          # Main resume document
+├── index.html          # Resume data (inline JSON) + render containers
 ├── assets/
 │   └── screenshots/    # README images
 ├── css/
 │   ├── style.css       # Screen styles and design tokens
 │   └── print.css       # Print-specific optimizations
 ├── js/
-│   └── script.js       # Inline editing and list controls
+│   └── script.js       # Render, inline editing, list controls, persistence
 ```
 
 ## Customization
@@ -81,18 +89,19 @@ Edit CSS custom properties in `css/style.css`:
 
 ### Content
 
-Edit `index.html` directly. Key sections:
+Edit the JSON in the `#resume-data` script tag in `index.html`. Top-level keys:
 
-- Header: Name and contact info
-- Summary: Professional summary paragraph
-- Skills: Two-column layout for skill categories
-- Experience: Work history with dates
-- Education: Degrees and institutions
-- Training: Courses and certifications
-- Languages: Proficiency meters
+- `header`: Name, contacts (email/phone/location), and social links
+- `summary`: Professional summary paragraph
+- `skills`: Array of `{ category, items[] }` groups (two-column layout)
+- `experience`: Work history `{ company, title, startDate, endDate, bullets[] }`
+- `education`: Degrees `{ degree, institution, location, startYear, endYear }`
+- `training`: Array of course/certification strings
+- `languages`: Array of `{ name, level }` (level 1–5 → proficiency meters)
 
-Elements with `data-editable` are editable in the browser.
-Containers with `data-list` get add/remove controls.
+The renderer marks elements with `data-editable` (editable in the browser) and
+`data-list` containers (add/remove controls). Browser edits are serialized back
+to this same JSON shape and persisted to `localStorage`.
 
 ### Print Settings
 
